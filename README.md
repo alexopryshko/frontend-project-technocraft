@@ -1,2 +1,2 @@
-frontend-project-technocraft
+Проект по курсу "Frontend" 
 ============================
