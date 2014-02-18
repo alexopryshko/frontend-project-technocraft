@@ -1,63 +1,9 @@
 <!DOCTYPE html>
-<html>
- <head>
-    <meta charset="utf-8">
-    <!--<link rel="stylesheet" href="/css/main.css"/>-->
-	<script src="/js/lib/jquery.js"></script>
-	<script src="/js/tmpl/main.js"></script>
-	<script src="/js/tmpl/game.js"></script>
-	<script src="/js/tmpl/scoreboard.js"></script>
- </head>
- <body>
+<html><head>
+    <meta charset="utf-8" />
+    <title><!-- TODO --></title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+</head><body>
     <div id="page"></div>
- </body>
- <script type="text/javascript">
-    var $page = $('#page'), currentScreen = 'main';
-    //$page.html(mainTmpl());
-	//var $page = $('#page');
-    //$page.html(mainTmpl());
-	//showMainScreen();
-	
-	 
-	//
-	function showScoreboardScreen() {
-		hideMainScreen();
-		currentScreen = 'scoreboard';
-		$page.html(scoreboardTmpl());
-		$page.find('.js-back').on('click', showMainScreen);		
-	}	
-	function hideScoreboardScreen() {
-		$page.find('.js-back').off('click', showMainScreen);
-	}
-	function showGameScreen() {
-		hideMainScreen();
-		currentScreen = 'game'
-		$page.html(gameTmpl());
-        $page.find('.js-back').on('click', showMainScreen);  
-	}
-	function hideGameScreen() {
-		$page.find('.js-back').off('click', showMainScreen);
-	}
-	function showMainScreen() { 
-		if (currentScreen == 'scoreboard') {
-			hideScoreboardScreen();
-		} 
-		else if (currentScreen == 'game') {
-			hideGameScreen();
-		}
-		currentScreen = 'main';
-		$page.html(mainTmpl()); // Рендерим шаблон
-		// Инициализируем обработчики событий
-		$page.find('.js-scoreboard').on('click', showScoreboardScreen);
-		$page.find('.js-start-game').on('click', showGameScreen);
-	}
-
-	function hideMainScreen() { // Деструктор экрана "Главный"
-		// Удаляем установленные обработчики событий
-		$page.find('.js-scoreboard').off('click', showScoreboardScreen);
-		$page.find('.js-start-game').off('click', showGameScreen);
-	}
-	
-	showMainScreen();	
- </script>
-</html>
+    <script data-main="js/main" src="js/lib/require.js"></script>
+</body></html>
