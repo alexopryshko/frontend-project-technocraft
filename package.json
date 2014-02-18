@@ -1,0 +1,28 @@
+{
+  "name": "game",
+  "version": "0.0.0",
+  "description": "tp_mail_ru_game",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexopryshko/Node"
+  },
+  "keywords": [
+    "tp.mail.ru"
+  ],
+  "author": "AlexO",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexopryshko/Node/issues"
+  },
+  "homepage": "https://github.com/alexopryshko/Node",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-connect": "~0.6.0",
+    "grunt-fest": "~0.1.5",
+    "grunt-contrib-watch": "~0.5.3"
+  }
+}

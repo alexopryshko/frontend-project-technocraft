@@ -1,0 +1,7 @@
+<fest:template xmlns:fest="http://fest.mail.ru"
+    context_name="json">
+    <div>
+        <h1>Scoreboard</h1>
+		<a class="js-back" href="#">Go back to main screen</a> 
+    </div>
+</fest:template>
