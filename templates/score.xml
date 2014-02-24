@@ -1,0 +1,4 @@
+<fest:template xmlns:fest="http://fest.mail.ru"
+               context_name="json">
+    <span class="list__item__name"><fest:value>json.name</fest:value></span><span class="list__item__score"> <fest:value>json.score</fest:value></span>
+</fest:template>

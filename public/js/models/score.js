@@ -4,8 +4,12 @@ define([
     Backbone
 ){
 
-    var Model = Backbone.Model.extend({
+    var Player = Backbone.Model.extend({
+        defaults: {
+            'name': '',
+            'score': 0
+        }
     });
 
-    return Model;
+    return Player;
 });

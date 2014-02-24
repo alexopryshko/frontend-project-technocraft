@@ -2,7 +2,7 @@
     context_name="json">
     <div>
         <h1>Game</h1>
-		<a class="js-back" href="#">Go back to main screen</a>
+		<a href="#">Go back to main screen</a>
     </div>
 </fest:template>
 
