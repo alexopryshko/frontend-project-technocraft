@@ -1,8 +1,10 @@
 <fest:template xmlns:fest="http://fest.mail.ru"
     context_name="json">
-    <div>
+    <div class="scoreboard">
         <h1>Game</h1>
-		<a class="js-back" href="#">Go back to main screen</a>
+        <canvas width="800" height="600" id="myCanvas"></canvas>
+        <script>StartGame()</script><br/>
+		<a href="#main">Go back to main screen</a>
     </div>
 </fest:template>
 
