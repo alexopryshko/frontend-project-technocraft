@@ -55,7 +55,7 @@ body {
     margin-top: 40px;
 }
 
-.menu__list__item a {
+.menu__list__item a, .scoreboard__back {
     border: 1px solid #ebebeb;
     display: inline-block;
     width: 50%;
@@ -77,7 +77,7 @@ body {
 
 }
 
-.menu__list__item a:hover {
+.menu__list__item a:hover, .scoreboard__back:hover {
     color: #bbb;
     border-color: #7e7e7e;
     background: #595959;
@@ -85,4 +85,28 @@ body {
 
 .scoreboard {
     padding-top: 20px;
+}
+
+.scoreboard__list {
+    list-style: none;
+    width: 400px;
+    margin: 0 auto;
+    padding-left: 0;
+}
+.scoreboard__list__item {
+    text-align: left;
+    margin: 5px;
+}
+
+.list__item__score {
+    float:right;
+}
+
+.list__item__name {
+    text-align: left;
+}
+
+.scoreboard__back {
+    width: 200px;
+    margin-top: 15px;
 }

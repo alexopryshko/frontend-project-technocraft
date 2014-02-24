@@ -2,6 +2,9 @@
     context_name="json">
     <div class="scoreboard">
         <h1>SCOREBOARD</h1>
-		<a class="js-back" href="#">Go back to main screen</a> 
+        <ul class="scoreboard__list">
+
+        </ul>
+		<a class="scoreboard__back" href="#">Main screen</a>
     </div>
 </fest:template>

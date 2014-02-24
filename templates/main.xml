@@ -4,8 +4,8 @@
         <div class="main-screen__menu">
             <h1 class="menu__logo">TECHNOCRAFT</h1>
             <ul class="menu__list">
-                <li class="menu__list__item"><a class="js-start-game" href="#game">Go to game</a></li>
-                <li class="menu__list__item"><a class="js-scoreboard" href="#scoreboard">Scoreboard</a></li>
+                <li class="menu__list__item"><a href="#game">Go to game</a></li>
+                <li class="menu__list__item"><a href="#scoreboard">Scoreboard</a></li>
             </ul>
         </div>
     </div>
