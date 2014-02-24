@@ -17,10 +17,11 @@ define(['backbone', 'views/main', 'views/game', 'views/scoreboard'
 
         },
         scoreboardAction: function () {
-            gameView.render();
+            scoreBoardView.render();
         },
         gameAction: function () {
-            scoreBoardView.render();
+            gameView.render();
+
         }
     });
 
