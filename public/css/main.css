@@ -1,1 +1,88 @@
-/* TODO */
+@font-face {
+    font-family: 'press_start_2pregular';
+    src: url('../fonts/pressstart2p-webfont.eot');
+    src: url('../fonts/pressstart2p-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/pressstart2p-webfont.woff') format('woff'),
+    url('../fonts/pressstart2p-webfont.ttf') format('truetype'),
+    url('../fonts/pressstart2p-webfont.svg#press_start_2pregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'press_start_2pregular';
+    margin: 0;
+    height: 100%;
+}
+
+#page {
+    height: 100%;
+}
+
+.main-screen, .scoreboard {
+    margin: 0;
+    background: #464646;
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    overflow: hidden;
+    text-align: center;
+    color: white;
+}
+
+.main-screen__menu {
+    margin: 0 auto;
+    margin-top: 10%;
+    width: 500px;
+    text-align: center;
+}
+
+.menu__logo {
+    color: white;
+    -webkit-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    -o-transform: scale(1.2);
+    text-shadow: 1px 1px 0 #CCC, 2px 2px 0 #CCC, 3px 3px 0 #444, 4px 4px 0 #444, 5px 5px 0 #444, 6px 6px 0 #444;
+}
+
+.menu__list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 40px;
+}
+
+.menu__list__item a {
+    border: 1px solid #ebebeb;
+    display: inline-block;
+    width: 50%;
+    height: 30px;
+    -webkit-box-shadow: 0 0 5px 0px rgba(150, 150, 150, 0.2);
+    -moz-box-shadow: 0 0 5px 0px rgba(150, 150, 150, 0.2);
+    box-shadow: 0 0 5px 0px rgba(150, 150, 150, 0.2);
+    background: #eee;
+    margin: 5px;
+    color: #616161;
+    text-decoration: none;
+    padding-top: 10px;
+
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+
+}
+
+.menu__list__item a:hover {
+    color: #bbb;
+    border-color: #7e7e7e;
+    background: #595959;
+}
+
+.scoreboard {
+    padding-top: 20px;
+}
