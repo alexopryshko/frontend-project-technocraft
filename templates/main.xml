@@ -3,8 +3,8 @@
     <div>
         <h1>Epic Game</h1>
 		<ul>
-			<li><a class="js-start-game" href="#">Go to game</a></li>
-			<li><a class="js-scoreboard" href="#">Scoreboard</a></li>
+			<li><a class="js-start-game" href="#game">Go to game</a></li>
+			<li><a class="js-scoreboard" href="#scoreboard">Scoreboard</a></li>
 		</ul>
     </div>
 </fest:template>

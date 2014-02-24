@@ -1,5 +1,9 @@
-define(['backbone'
+define(['backbone', 'views/main', 'views/game', 'views/scoreboard'
 ], function(
+    Backbone,
+    mainView,
+    gameView,
+    scoreBoardView
 ){
 
     var Router = Backbone.Router.extend({
@@ -9,13 +13,14 @@ define(['backbone'
             '*default': 'defaultActions'
         },
         defaultActions: function () {
-            // TODO
+            mainView.render();
+
         },
         scoreboardAction: function () {
-            // TODO
+            gameView.render();
         },
         gameAction: function () {
-            // TODO
+            scoreBoardView.render();
         }
     });
 
