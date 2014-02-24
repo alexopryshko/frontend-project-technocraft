@@ -1,6 +1,7 @@
 define([
     'backbone',
-    'tmpl/game'
+    'tmpl/game',
+    'gameEngine'
 ], function(
     Backbone,
     tmpl
