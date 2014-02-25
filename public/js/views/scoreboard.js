@@ -66,6 +66,7 @@ define([
         el: "#page",
         template: tmpl,
         initialize: function () {
+            // TODO
         },
         render: function () {
             this.$el.html(this.template());
