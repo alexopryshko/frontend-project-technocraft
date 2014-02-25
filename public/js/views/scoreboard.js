@@ -17,10 +17,6 @@ define([
         className: "scoreboard__list__item",
         template: tmplScore,
 
-        events: {
-            "click .button_delete": "destroy"
-        },
-
         initialize: function () {
             this.listenTo(this.model, "change", this.render);
         },
