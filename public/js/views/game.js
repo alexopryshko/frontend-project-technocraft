@@ -1,7 +1,10 @@
 define([
     'backbone',
     'tmpl/game',
-    'engine/gameEngine'
+    'engine/gameEngine',
+    'engine/wall',
+    'engine/human',
+    'engine/world'
 ], function(
     Backbone,
     tmpl,
