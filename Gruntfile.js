@@ -8,6 +8,16 @@ module.exports = function (grunt) {
                     atBegin: true
                 }
             },
+            express: {
+                files:  [
+                    'routes/**/*.js',
+                    'app.js'
+                ],
+                tasks:  [ 'express' ],
+                options: {
+                    spawn: false
+                }
+            },
             server: {
                 files: [
                     'public/js/**/*.js',
@@ -19,12 +29,12 @@ module.exports = function (grunt) {
                 }
             }
         },
-        connect: {
+        express: {
             server: {
                 options: {
                     livereload: true,
                     port: 8010,
-                    base: 'public'
+                    script: 'app.js'
                 }
             }
         },
@@ -49,9 +59,9 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-express-server');
     grunt.loadNpmTasks('grunt-fest');
 
-    grunt.registerTask('default', ['connect', 'watch']);
+    grunt.registerTask('default', ['express', 'watch']);
 
 };
