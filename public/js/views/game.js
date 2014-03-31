@@ -1,32 +1,40 @@
 define([
     'backbone',
     'tmpl/game',
-    'engine/gameEngine',
-    'engine/wall',
-    'engine/human',
-    'engine/world'
+    'views/viewManager',
+    //'engine/gameEngine',
+    //'engine/wall',
+    //'engine/human',
+    //'engine/world'
 ], function(
     Backbone,
     tmpl,
-    gameStart
+    viewManager
 ){
     var View = Backbone.View.extend({
-
-        el: "#page",
+        _name: "game",
+        el: "#game",
         template: tmpl,
         initialize: function () {
-            // TODO
+            this.render();
+            this.hide();
+            //gameStart();
         },
         render: function () {
             this.$el.html(this.template());
-            gameStart();
-            return this;
+            //$(".game__screen").show();
+            //gameStart();
         },
         show: function () {
-            // TOD
+            $.event.trigger({
+                type: "show",
+                _name: this._name
+            }); 
+            this.$el.show();
         },
         hide: function () {
-            // TODO
+            this.$el.hide();
+            //$(".game__screen").show();
         }
 
     });

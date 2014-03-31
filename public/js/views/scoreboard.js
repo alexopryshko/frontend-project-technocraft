@@ -2,12 +2,14 @@ define([
     'backbone',
     'tmpl/scoreboard',
     'collections/scores',
-    'tmpl/score'
+    'tmpl/score',
+    'views/viewManager'
 ], function(
     Backbone,
     tmpl,
     scores,
-    tmplScore
+    tmplScore,
+    viewManager
 ){
 
 
@@ -52,35 +54,40 @@ define([
 
         render : function() {
             var that = this;
-
             $(this.el).empty();
-
             _(this._playerViews).each(function(pv) {
                 $(that.el).append(pv.render().el);
             });
         }
+
     });
 
     var View = Backbone.View.extend({
 
-        el: "#page",
+        el: "#scoreboard",
         template: tmpl,
+        _name: "scoreboard",
+
         initialize: function () {
-            // TODO
-        },
-        render: function () {
-            this.$el.html(this.template());
+            this.render();
             this.scoresView = new ScoresViews({
                 collection: scores
             });
-            this.scoresView.render();
-            return this;
+            this.hide();
+        },
+        render: function () {
+            this.$el.html(this.template());
         },
         show: function () {
-            // TODO
+            this.$el.show();
+            this.scoresView.render();
+            $.event.trigger({
+                type: "show",
+                _name: this._name
+            }); 
         },
         hide: function () {
-            // TODO
+            this.$el.hide();
         }
 
     });
