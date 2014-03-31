@@ -2,14 +2,16 @@ define([
     'backbone',
     'tmpl/game',
     'views/viewManager',
-    //'engine/gameEngine',
+    'engine/gameEngine',
+    'views/gameOver'
     //'engine/wall',
     //'engine/human',
     //'engine/world'
 ], function(
     Backbone,
     tmpl,
-    viewManager
+    viewManager,
+    gameStart
 ){
     var View = Backbone.View.extend({
         _name: "game",
@@ -31,6 +33,7 @@ define([
                 _name: this._name
             }); 
             this.$el.show();
+            gameStart();
         },
         hide: function () {
             this.$el.hide();

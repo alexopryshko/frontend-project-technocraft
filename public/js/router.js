@@ -12,7 +12,6 @@ define([
     viewManager
 ){
 
-    var currentScreen = "";
     var Router = Backbone.Router.extend({
         routes: {
             'scoreboard': 'scoreboardAction',

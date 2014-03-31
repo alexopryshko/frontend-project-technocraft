@@ -4,9 +4,9 @@
         <canvas class="game__screen" width="800" height="500" id="myCanvas"></canvas>
         <div class="game__toolbar">
             <h1>USER TOOLBAR</h1>
-            <a href="#">Go back to main screen</a></div>
+            <a href="#">Go back to main screen</a><br/>
+        </div>
     </div>
-
 </fest:template>
 
 
