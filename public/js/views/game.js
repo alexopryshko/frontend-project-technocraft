@@ -1,14 +1,11 @@
 define([
     'backbone',
     'tmpl/game',
-    'engine/gameEngine',
-    'engine/wall',
-    'engine/human',
-    'engine/world'
+    'engine/game'
 ], function(
     Backbone,
     tmpl,
-    gameStart
+    GameStart
 ){
     var View = Backbone.View.extend({
 
@@ -19,11 +16,11 @@ define([
         },
         render: function () {
             this.$el.html(this.template());
-            gameStart();
+            GameStart();
             return this;
         },
         show: function () {
-            // TOD
+            // TODO
         },
         hide: function () {
             // TODO
