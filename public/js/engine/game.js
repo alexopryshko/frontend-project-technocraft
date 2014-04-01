@@ -1,9 +1,9 @@
 define([
     'engine/environment',
+    'views/gameOver',
     'engine/player',
     'engine/obstacle',
-    'engine/enemy',
-    'views/gameOver'
+    'engine/enemy'
 ], function(
     environment,
     GameOver
@@ -68,8 +68,10 @@ define([
             isPlaying = envVariables.player1.isLive;
             requestAnimFrame(gameLoop);
         } else {
+            console.log('go');
             var gameOver  = new GameOver();
-            gameOver.render(30);
+            gameOver.show(30);
+
         }
     }
 
