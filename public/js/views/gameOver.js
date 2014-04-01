@@ -42,7 +42,7 @@ define([
 
             $('.btn').prop("disabled", true);
             $.ajax({
-                url : '/scores13',
+                url : '/scores',
                 type: 'post',
                 data: data,
                 dataType: 'json',
