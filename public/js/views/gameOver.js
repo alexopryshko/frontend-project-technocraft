@@ -1,13 +1,15 @@
 define([
     'backbone',
     'tmpl/gameOver',
+    'engine/storage',
     'views/viewManager',
     'models/score',
     'collections/scores',
     'views/game'
 ], function(
     Backbone,
-    tmpl
+    tmpl,
+    storage
 ){
  
     var View = Backbone.View.extend({
@@ -40,7 +42,7 @@ define([
 
             $('.btn').prop("disabled", true);
             $.ajax({
-                url : '/scores',
+                url : '/scores13',
                 type: 'post',
                 data: data,
                 dataType: 'json',
@@ -51,8 +53,9 @@ define([
                 },
 
                 error: function(response) {
-                    $("#formError").html("Type your name");
-                    $('.btn').prop("disabled", false);
+                    storage.put(data);
+                    window.location = "/#scoreboard";
+                    $('#inputScore').trigger("success");
                 }
             })
         }

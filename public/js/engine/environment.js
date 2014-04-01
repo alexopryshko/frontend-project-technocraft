@@ -13,7 +13,7 @@ define([
             player1,
             obstacles = [],
             enemies = [],
-            numEnemies = 5;
+            numEnemies = 0;
 
 
 

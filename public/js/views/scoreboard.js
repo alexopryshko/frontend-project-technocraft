@@ -4,14 +4,18 @@ define([
     'collections/scores',
     'tmpl/score',
     'views/viewManager',
-    'models/score'
+    'models/score',
+    'engine/storage',
+    'views/gameOver'
 ], function(
     Backbone,
     tmpl,
     scores,
     tmplScore,
     viewManager,
-    Player
+    Player,
+    storage,
+    gameOver
 ){
     var PlayerView = Backbone.View.extend({
 
@@ -45,13 +49,19 @@ define([
             $(that.el).empty();
             $.ajax({
                     type: 'GET',
-                    url: 'scores',
+                    url: 'scores12',
                     data: {
                         limit: 10
                     },
                     dataType: 'json',
                     success: function(data) {
                         $(that.el).empty();
+                        /*if (scores.getAll().length != 0) {
+                            var allScores = scores.getAll();
+                            for (var i = 0; i < allScores.length; i++) {
+                                //gameOver.postScores(allScores[i]);
+                            }
+                        }*/
                         for (var i = 0; i < data.length; ++i) {
                             pv = new PlayerView({
                                 model : new Player(data[i]),
@@ -62,8 +72,17 @@ define([
                     },
                     error: function(data) {
                         $(that.el).empty();
-                        $(that.el).append("Error conection");
-                        //тут надо сделать кнопку повторной загрузки
+
+                        var data = storage.getAll();
+                        for (var i = 0; i < data.length; ++i) {
+                            var parsedData = JSON.parse('{"' + decodeURI(data[i].replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
+                            console.log(parsedData);
+                            pv = new PlayerView({
+                                model : new Player(parsedData),
+                                tagName : 'li'
+                            });
+                            $(that.el).append(pv.render().el);
+                        }
                     }
                 }); 
         }

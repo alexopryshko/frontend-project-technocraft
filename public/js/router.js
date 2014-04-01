@@ -22,18 +22,15 @@ define([
             this.viewManager = viewManager; 
         },
         defaultActions: function () {
-            //mainView.render();
             viewManager.addView(mainView._name, mainView);
             mainView.show();
 
         },
         scoreboardAction: function () {
-            //scoreBoardView.render();
             viewManager.addView(scoreBoardView._name, scoreBoardView);
             scoreBoardView.show();
         },
         gameAction: function () {
-            //gameView.render();
             viewManager.addView(gameView._name, gameView);
             gameView.show();
         }
