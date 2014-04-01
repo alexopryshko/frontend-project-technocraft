@@ -10,11 +10,19 @@ define([
         model: Player,
         comparator: function(player) {
             return -player.get("score");
+        },
+
+        initialize: function() {
+            this.url = '/scores';
+        },
+
+        set: function(input) {
+            
         }
     });
 
 
 
-    return new Collection();
+    return Collection;
 
 });

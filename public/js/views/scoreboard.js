@@ -10,7 +10,7 @@ define([
 ], function(
     Backbone,
     tmpl,
-    scores,
+    Scores,
     tmplScore,
     viewManager,
     Player,
@@ -41,52 +41,31 @@ define([
         el: ".scoreboard__list",
 
         initialize : function() {
-
+            var that = this;
+            this._playerViews = [];
+            this.collection.fetch();
+            console.log('sdasd');
+            console.log(this.collection);
+            console.log(this.collection.models);
+            this.collection.sort();
+            this.collection.each(function(player) {
+                console.log(player);
+                that._playerViews.push(new PlayerView({
+                    model : player,
+                    tagName : 'li'
+                }));
+            });
         },
 
         render : function() {
             var that = this;
-            $(that.el).empty();
-            $.ajax({
-                    type: 'GET',
-                    url: 'scores12',
-                    data: {
-                        limit: 10
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        $(that.el).empty();
-                        /*if (scores.getAll().length != 0) {
-                            var allScores = scores.getAll();
-                            for (var i = 0; i < allScores.length; i++) {
-                                //gameOver.postScores(allScores[i]);
-                            }
-                        }*/
-                        for (var i = 0; i < data.length; ++i) {
-                            pv = new PlayerView({
-                                model : new Player(data[i]),
-                                tagName : 'li'
-                            }); 
-                            $(that.el).append(pv.render().el);
-                        }
-                    },
-                    error: function(data) {
-                        $(that.el).empty();
 
-                        var data = storage.getAll();
-                        for (var i = 0; i < data.length; ++i) {
-                            var parsedData = JSON.parse('{"' + decodeURI(data[i].replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
-                            console.log(parsedData);
-                            pv = new PlayerView({
-                                model : new Player(parsedData),
-                                tagName : 'li'
-                            });
-                            $(that.el).append(pv.render().el);
-                        }
-                    }
-                }); 
+            $(this.el).empty();
+
+            _(this._playerViews).each(function(pv) {
+                $(that.el).append(pv.render().el);
+            });
         }
-
     });
 
     var View = Backbone.View.extend({
@@ -97,7 +76,9 @@ define([
 
         initialize: function () {
             this.render();
-            this.scoresView = new ScoresViews();
+            this.scoresView = new ScoresViews({
+                collection: new Scores()
+            });
             this.hide();
         },
         render: function () {
@@ -105,6 +86,7 @@ define([
         },
         show: function () {
             this.$el.show();
+
             this.scoresView.render();
             $.event.trigger({
                 type: "show",
