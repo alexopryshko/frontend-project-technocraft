@@ -70,7 +70,7 @@ define([
         } else {
             console.log('go');
             var gameOver  = new GameOver();
-            gameOver.show(30);
+            gameOver.show(Math.floor(Math.random() * (1000 + 1 - 100)) + 100);
 
         }
     }
