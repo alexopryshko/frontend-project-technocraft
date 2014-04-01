@@ -1,10 +1,11 @@
 <fest:template xmlns:fest="http://fest.mail.ru"
-    context_name="json">
+               context_name="json">
     <div class="game">
-        <canvas class="game__screen" width="800" height="500" id="myCanvas"></canvas>
-        <div class="game__toolbar">
-            <h1>USER TOOLBAR</h1>
-            <a href="#">Go back to main screen</a></div>
+        <canvas width="800" height="600" id="canvasBg"></canvas>
+
+        <div class="game__overlapping">
+            <canvas width="800" height="600" id="canvasEntities"></canvas>
+        </div>
     </div>
 
 </fest:template>
