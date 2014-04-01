@@ -11,11 +11,7 @@ define([
     Backbone,
     tmpl,
     Scores,
-    tmplScore,
-    viewManager,
-    Player,
-    storage,
-    gameOver
+    tmplScore
 ){
     var PlayerView = Backbone.View.extend({
 
@@ -43,10 +39,10 @@ define([
         initialize : function() {
             var that = this;
             this._playerViews = [];
-            this.collection.fetch();
-            console.log('sdasd');
+
+            this.collection = Scores;
+
             console.log(this.collection);
-            console.log(this.collection.models);
             this.collection.sort();
             this.collection.each(function(player) {
                 console.log(player);
@@ -76,9 +72,7 @@ define([
 
         initialize: function () {
             this.render();
-            this.scoresView = new ScoresViews({
-                collection: new Scores()
-            });
+            this.scoresView = new ScoresViews();
             this.hide();
         },
         render: function () {

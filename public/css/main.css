@@ -45,7 +45,8 @@ body {
 
 .main-screen__menu {
     margin: 0 auto;
-    margin-top: 10%;
+    margin-top: 5%;
+    margin-bottom: 5%;
     width: 500px;
     text-align: center;
 }
@@ -64,7 +65,7 @@ body {
     margin-top: 40px;
 }
 
-.menu__list__item a, .scoreboard__back {
+button, .menu__list__item a, .scoreboard__back {
     border: 1px solid #ebebeb;
     display: inline-block;
     width: 50%;
@@ -86,7 +87,7 @@ body {
 
 }
 
-.menu__list__item a:hover, .scoreboard__back:hover {
+button:hover, .menu__list__item a:hover, .scoreboard__back:hover {
     color: #bbb;
     border-color: #7e7e7e;
     background: #595959;
@@ -163,5 +164,6 @@ canvas {
 #gameOver {
     position: absolute;
     top: 10%;
-    width: 100%;
+    padding: 20px;
+    width: 96%;
 }
