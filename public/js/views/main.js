@@ -1,27 +1,34 @@
 define([
     'backbone',
-    'tmpl/main'
+    'tmpl/main',
+    'views/viewManager',
 ], function(
     Backbone,
-    tmpl
+    tmpl,
+    viewManager
 ){
 
     var View = Backbone.View.extend({
-
-        el: "#page",
+        _name: "main",
+        el: "#main",
         template: tmpl,
+
         initialize: function () {
-            //this.render();
+            this.render();
+            this.hide();
         },
         render: function () {
             this.$el.html(this.template());
-            return this;
         },
         show: function () {
-            // TODO
+            $.event.trigger({
+                type: "show",
+                _name: this._name
+            }); 
+            this.$el.show();
         },
         hide: function () {
-            // TODO
+            this.$el.hide();
         }
 
     });

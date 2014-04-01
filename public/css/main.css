@@ -19,9 +19,18 @@ body {
     height: 100%;
 }
 
-#page {
+#main {
     height: 100%;
 }
+
+#game {
+    height: 100%;
+}
+
+#scoreboard {
+    height: 100%;
+}
+
 
 .main-screen, .scoreboard {
     margin: 0;

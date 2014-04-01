@@ -1,29 +1,35 @@
 define([
     'backbone',
     'tmpl/game',
-    'engine/game'
+    'engine/game',
+    'views/viewManager',
+    'views/gameOver'
 ], function(
     Backbone,
     tmpl,
     GameStart
 ){
     var View = Backbone.View.extend({
-
-        el: "#page",
+        _name: "game",
+        el: "#game",
         template: tmpl,
         initialize: function () {
-            // TODO
+            this.render();
+            this.hide();
         },
         render: function () {
             this.$el.html(this.template());
-            GameStart();
-            return this;
         },
         show: function () {
-            // TODO
+            $.event.trigger({
+                type: "show",
+                _name: this._name
+            }); 
+            this.$el.show();
+            GameStart();
         },
         hide: function () {
-            // TODO
+            this.$el.hide();
         }
 
     });

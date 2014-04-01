@@ -7,7 +7,6 @@
             <canvas width="800" height="600" id="canvasEntities"></canvas>
         </div>
     </div>
-
 </fest:template>
 
 

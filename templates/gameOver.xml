@@ -1,0 +1,19 @@
+<fest:template xmlns:fest="http://fest.mail.ru"
+    context_name="json">
+    <div class="main-screen">
+        <div class="main-screen__menu">
+            <h1 class="menu__logo">TECHNOCRAFT</h1>
+            <h1 class="menu__logo">Your score is<fest:space /> <fest:value>json.score</fest:value></h1>
+            <form id="inputScore">
+    			<div class="gameOverForm__text">
+    				<label class="label">Your name:</label>
+    				<input id="nameField" maxlength="50" type="text" name="name"/>
+    			</div>
+    			<input id="scoreField" type="hidden" name="score">
+    				<fest:attributes><fest:attribute name='value' value='{json.score}'/></fest:attributes>
+    			</input>
+    			<button id="sendScore" type="submit">Save</button>
+    		</form>
+        </div>
+    </div>
+</fest:template>

@@ -1,9 +1,15 @@
-define(['backbone', 'views/main', 'views/game', 'views/scoreboard'
+define([
+    'backbone', 
+    'views/main', 
+    'views/game', 
+    'views/scoreboard',
+    'views/viewManager'
 ], function(
     Backbone,
     mainView,
     gameView,
-    scoreBoardView
+    scoreBoardView,
+    viewManager
 ){
 
     var Router = Backbone.Router.extend({
@@ -12,16 +18,24 @@ define(['backbone', 'views/main', 'views/game', 'views/scoreboard'
             'game': 'gameAction',
             '*default': 'defaultActions'
         },
+        initialize: function() {
+            this.viewManager = viewManager; 
+        },
         defaultActions: function () {
-            mainView.render();
+            //mainView.render();
+            viewManager.addView(mainView._name, mainView);
+            mainView.show();
 
         },
         scoreboardAction: function () {
-            scoreBoardView.render();
+            //scoreBoardView.render();
+            viewManager.addView(scoreBoardView._name, scoreBoardView);
+            scoreBoardView.show();
         },
         gameAction: function () {
-            gameView.render();
-
+            //gameView.render();
+            viewManager.addView(gameView._name, gameView);
+            gameView.show();
         }
     });
 

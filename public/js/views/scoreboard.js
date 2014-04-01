@@ -2,24 +2,22 @@ define([
     'backbone',
     'tmpl/scoreboard',
     'collections/scores',
-    'tmpl/score'
+    'tmpl/score',
+    'views/viewManager',
+    'models/score'
 ], function(
     Backbone,
     tmpl,
     scores,
-    tmplScore
+    tmplScore,
+    viewManager,
+    Player
 ){
-
-
     var PlayerView = Backbone.View.extend({
 
         tagName: "li",
         className: "scoreboard__list__item",
         template: tmplScore,
-
-        events: {
-            "click .button_delete": "destroy"
-        },
 
         initialize: function () {
             this.listenTo(this.model, "change", this.render);
@@ -39,48 +37,63 @@ define([
         el: ".scoreboard__list",
 
         initialize : function() {
-            var that = this;
-            this._playerViews = [];
-            this.collection.sort();
-            this.collection.each(function(player) {
-                that._playerViews.push(new PlayerView({
-                    model : player,
-                    tagName : 'li'
-                }));
-            });
+
         },
 
         render : function() {
             var that = this;
-
-            $(this.el).empty();
-
-            _(this._playerViews).each(function(pv) {
-                $(that.el).append(pv.render().el);
-            });
+            $(that.el).empty();
+            $.ajax({
+                    type: 'GET',
+                    url: 'scores',
+                    data: {
+                        limit: 10
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        $(that.el).empty();
+                        for (var i = 0; i < data.length; ++i) {
+                            pv = new PlayerView({
+                                model : new Player(data[i]),
+                                tagName : 'li'
+                            }); 
+                            $(that.el).append(pv.render().el);
+                        }
+                    },
+                    error: function(data) {
+                        $(that.el).empty();
+                        $(that.el).append("Error conection");
+                        //тут надо сделать кнопку повторной загрузки
+                    }
+                }); 
         }
+
     });
 
     var View = Backbone.View.extend({
 
-        el: "#page",
+        el: "#scoreboard",
         template: tmpl,
+        _name: "scoreboard",
+
         initialize: function () {
-            // TODO
+            this.render();
+            this.scoresView = new ScoresViews();
+            this.hide();
         },
         render: function () {
             this.$el.html(this.template());
-            this.scoresView = new ScoresViews({
-                collection: scores
-            });
-            this.scoresView.render();
-            return this;
         },
         show: function () {
-            // TODO
+            this.$el.show();
+            this.scoresView.render();
+            $.event.trigger({
+                type: "show",
+                _name: this._name
+            }); 
         },
         hide: function () {
-            // TODO
+            this.$el.hide();
         }
 
     });
