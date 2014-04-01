@@ -86,6 +86,7 @@ Enemy.prototype.checkDirection = function () {
     }
 };
 
+
 Enemy.prototype.die = function () {
     var soundEffect = new Audio("audio/dying.wav");
     soundEffect.play();
@@ -99,3 +100,4 @@ Enemy.prototype.die = function () {
 function randomRange(min, max) {
     return Math.floor(Math.random() * (max + 1 - min)) + min;
 }
+

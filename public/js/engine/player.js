@@ -22,8 +22,9 @@ define(function () {
         var numBullets = 10;
         this.bullets = [];
         this.currentBullet = 0;
-
+        this.isLive = true;
         this.isStay = true;
+        this.environment = environment;
         for (var i = 0; i < numBullets; i++) {
             this.bullets[this.bullets.length] = new Bullet(this, environment);
         }
@@ -82,7 +83,12 @@ define(function () {
         if (!obstacleCollision && !outOfBounds(this, newDrawX, newDrawY)) {
             this.drawX = newDrawX;
             this.drawY = newDrawY;
+
         }
+
+
+        this.checkEnemyContact();
+
     };
 
     Player.prototype.checkObstacleCollide = function (newDrawX, newDrawY) {
@@ -135,6 +141,14 @@ define(function () {
             }
         }
     };
+
+    Player.prototype.checkEnemyContact = function() {
+        for (var i = 0; i < this.environment.getVariables().enemies.length; i++) {
+            if (collision(this, this.environment.getVariables().enemies[i]) && !this.environment.getVariables().enemies[i].isDead) {
+                this.isLive = false;
+            }
+        }
+    }
 
 
     function outOfBounds(object, x, y) {
@@ -228,6 +242,8 @@ define(function () {
             this.recycle();
         }
     };
+
+
 
     function collision(a, b) {
         return a.drawX <= b.drawX + b.width &&
