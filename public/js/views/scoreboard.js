@@ -14,8 +14,7 @@ define([
     tmplScore,
     viewManager,
     Player,
-    Storage,
-    gameOver
+    Storage
 ){
     var PlayerView = Backbone.View.extend({
 
