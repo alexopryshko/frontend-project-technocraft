@@ -1,7 +1,7 @@
 define([
     'backbone',
     'tmpl/main',
-    'views/viewManager',
+    'views/viewManager'
 ], function(
     Backbone,
     tmpl,

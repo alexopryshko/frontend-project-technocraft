@@ -4,7 +4,7 @@ define([
     'views/viewManager',
     'models/score',
     'collections/scores',
-    'views/game',
+    'views/game'
 ], function(
     Backbone,
     tmpl,
