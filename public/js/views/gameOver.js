@@ -7,11 +7,7 @@ define([
     'views/game'
 ], function(
     Backbone,
-    tmpl,
-    ViewManager,
-    Score,
-    Scoreboard,
-    gameView
+    tmpl
 ){
  
     var View = Backbone.View.extend({
@@ -25,7 +21,8 @@ define([
         render: function (score) {
             this.$el.html(this.template({score: score}));
             var game = this;
-            $('#inputScore').on("submit" , postScores);
+            $('#inputScore').on("submit" , this.postScores);
+            $('#inputScore').on("success", this.hide);
         },
 
         show: function (score) {
@@ -35,14 +32,12 @@ define([
 
         hide: function () {
             this.$el.hide();
-        }
- 
-    });
+        },
 
-    function postScores(event) {
+        postScores: function(event) {
             event.preventDefault();
             var data = $(this).serialize();
- 
+
             $('.btn').prop("disabled", true);
             $.ajax({
                 url : '/scores',
@@ -50,16 +45,19 @@ define([
                 data: data,
                 dataType: 'json',
                 success : function(response) {
-                	$('.btn').prop("disabled", false);
-            		window.location = "/#scoreboard";
+                    $('.btn').prop("disabled", false);
+                    window.location = "/#scoreboard";
+                    $('#inputScore').trigger("success");
                 },
 
                 error: function(response) {
-                	$("#formError").html("Type your name");
+                    $("#formError").html("Type your name");
                     $('.btn').prop("disabled", false);
                 }
-            })     
-    }
+            })
+        }
+ 
+    });
 
     return View;
 });

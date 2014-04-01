@@ -159,3 +159,9 @@ canvas {
 .game {
     text-align: center;
 }
+
+#gameOver {
+    position: absolute;
+    top: 10%;
+    width: 100%;
+}

@@ -4,8 +4,7 @@ define([
     'views/viewManager'
 ], function(
     Backbone,
-    tmpl,
-    viewManager
+    tmpl
 ){
 
     var View = Backbone.View.extend({
