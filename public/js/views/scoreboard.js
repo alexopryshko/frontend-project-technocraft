@@ -10,8 +10,12 @@ define([
 ], function(
     Backbone,
     tmpl,
-    Scores,
-    tmplScore
+    scores,
+    tmplScore,
+    viewManager,
+    Player,
+    Storage,
+    gameOver
 ){
     var PlayerView = Backbone.View.extend({
 
@@ -54,14 +58,59 @@ define([
         },
 
         render : function() {
+
+        },
+
+        hide: function() {
+            this.$el.hide();
+        },
+
+        show: function() {
+            this.$el.show();
             var that = this;
 
-            $(this.el).empty();
-            console.log('Test');
-            this.collection.fetchAll();
-            _(this._playerViews).each(function(pv) {
-                $(that.el).append(pv.render().el);
+            $(that.el).empty();
+            $.ajax({
+                type: 'GET',
+                url: '/scores',
+                data: {
+                    limit: 10
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $(that.el).empty();
+                    var dataStorage = Storage.getAll();
+                    for (var i = 0; i < dataStorage.length; ++i) {
+                        var parsedData = JSON.parse('{"' + decodeURI(dataStorage[i].replace(/&/g, "\",\"").replace(/=/g, "\":\"")) + '"}')
+                        var player = new Player(parsedData);
+                        player.save();
+                    }
+                    Storage.clear();
+
+                    for (var i = 0; i < data.length; ++i) {
+                        pv = new PlayerView({
+                            model : new Player(data[i]),
+                            tagName : 'li'
+                        });
+                        $(that.el).append(pv.render().el);
+                    }
+                },
+                error: function(data) {
+                    $(that.el).empty();
+
+                    var data = Storage.getAll();
+                    for (var i = 0; i < data.length; ++i) {
+                        var parsedData = JSON.parse('{"' + decodeURI(data[i].replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
+                        console.log(parsedData);
+                        pv = new PlayerView({
+                            model : new Player(parsedData),
+                            tagName : 'li'
+                        });
+                        $(that.el).append(pv.render().el);
+                    }
+                }
             });
+
         }
     });
 
@@ -82,7 +131,8 @@ define([
         show: function () {
             this.$el.show();
 
-            this.scoresView.render();
+            this.scoresView.show();
+
             $.event.trigger({
                 type: "show",
                 _name: this._name
@@ -90,6 +140,7 @@ define([
         },
         hide: function () {
             this.$el.hide();
+            this.scoresView.hide();
         }
 
     });

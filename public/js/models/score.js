@@ -10,6 +10,7 @@ define([
             'score': 0
         },
         url: "/scores"
+
     });
 
     return Player;
