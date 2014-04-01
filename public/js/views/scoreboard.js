@@ -57,7 +57,8 @@ define([
             var that = this;
 
             $(this.el).empty();
-
+            console.log('Test');
+            this.collection.fetchAll();
             _(this._playerViews).each(function(pv) {
                 $(that.el).append(pv.render().el);
             });
