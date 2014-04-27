@@ -6,10 +6,23 @@
 		<title>
 			<fest:value>json.title</fest:value>
 		</title>
-		<meta name="viewport" content="..." />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no, maximum-scale=1, minimum-scale=1"/>
 	</head>
 	<body>
 		Hello world!
+		<div id='tokenForm' class='form'>
+
+				<div class='form__text' for='token'>Your token:</div>
+				<input id='token' type='text'/>
+				<p class='error form__text_error'>asdas</p>
+				<input id='submit' type="button" value="Bind"/>
+				<input id='send' type="button" value="Send"/>
+			</div>
 	</body>
+	
+	<script type="text/javascript" src="js/lib/require.js"></script>
+	
+	<script type="text/javascript" src="js/joystick.js"></script>
+
 </html>
 </fest:template>

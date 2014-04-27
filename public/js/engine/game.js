@@ -1,12 +1,14 @@
 define([
     'engine/environment',
     'views/gameOver',
-    'engine/player',
-    'engine/obstacle',
-    'engine/enemy'
+    //'engine/player',
+    //'engine/obstacle',
+    //'engine/enemy',
+    'lib/Connector'
 ], function(
     environment,
-    GameOver
+    GameOver,
+    Connection
 ) {
     var isPlaying,
         requestAnimFrame,
@@ -30,6 +32,28 @@ define([
         envVariables.imageSprite.src = "images/sprite.png";
 
         envVariables.imageSprite.addEventListener("load", init, false);
+
+        server = new Connection({
+                    server: ['getToken', 'bind'],
+                    remote: '/console'
+                });
+        server.getToken(function(token) {
+                console.log('token= ' + token);
+            });
+
+
+        //this.server.on('message', this.messageRecieved);
+        //this.server.on('reconnect', reconnect.bind(game));
+        //this.server.on('disconnect', disconnect.bind(game));
+        this.server.on('player-joined', function(data) {
+            console.log(data.guid); // guid инициализированной связки
+            localStorage.setItem('guid', data.guid);
+        });
+
+        server.on('message', function(data, answer) {
+            console.log('message', data);
+            answer('answer');
+        });
 
     }
     
