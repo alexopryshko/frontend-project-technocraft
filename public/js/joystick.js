@@ -28,29 +28,7 @@ require.config({
 });
 
 
-require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connection) {
-
-	var server = new Connection({
-			//server: ['bind'],
-			remote: '/player'
-		}
-	);
-
-    $('#submit').click(function() {
-    	
-        server.bind({
-            token: $('#token').val()
-        }, function(answer) {
-            if (answer.status == 'success') {
-                console.log("success");
-            } else {
-                console.log("error");
-            }
-        });
-
-
-        return false;
-    });
+require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connector) {
 
     $('#send').click(function() {
 
@@ -64,48 +42,67 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
     });
 
 
-    // Инициализация
-    var init = function() {
-        // Если id нет
-        if (!localStorage.getItem('guid')) {
-            // Получаем токен
-            this.server.getToken(function(token) {
-                console.log('token= ' + token);
+    var input = document.getElementById('token');
+    // Создаем связь с сервером
+	var server = new Connector({
+			server: ['bind'],
+			remote: '/player'
+		}
+	);
 
-            });
-        } else { // иначе
-            // переподключаемся к уже созданной связке
-            reconnect.call(this);
-        }
-    };
+	// Инициализация
+	init = function(){
+		//message.innerHTML = 'ready';
+		// Если id нет
+		if (!localStorage.getItem('playerguid')){
+			// Ждем ввода токена
+			input.parentNode.addEventListener('submit', function(e){
+				e.preventDefault();
+				console.log('asfd');
+				// И отправляем его на сервер
+				server.bind({token: input.value}, function(data){
+					if (data.status == 'success'){ //  В случае успеха
+						// Стартуем джостик
+						start(data.guid);
+					}
+				});
+			}, false);
 
-    // Переподключение
-    var reconnect = function() {
-        // Используем сохранненный id связки
-        var self = this;
-        server.bind({
-            guid: localStorage.getItem('guid')
-        }, function(data) {
-            // Если все ок
-            if (data.status == 'success') {
-                // Стартуем
-                localStorage.setItem('guid', data.guid);
+		} else { // иначе
+			// переподключаемся к уже созданной связке
+			reconnect();
+		}
+	};
 
-                // Если связки уже нет
-            } else if (data.status == 'undefined guid') {
-                // Начинаем все заново
-                localStorage.removeItem('guid');
-                init.call(self);
-            }
-        });
-    };
+	// Переподключение
+	// Используем сохранненный id связки
+	reconnect = function(){
+		server.bind({guid: localStorage.getItem('playerguid')}, function(data){
+			// Если все ок
+			if (data.status == 'success'){
+				// Стартуем
+				start(data.guid);
+			// Если связки уже нет
+			} else if (data.status == 'undefined guid'){
+				// Начинаем все заново
+				localStorage.removeItem('playerguid');
+				init();
+			}
+		});
+	};
+
+	// Старт игры
+	start = function(guid){
+		console.log('start player');
+		// Сохраняем id связки
+		localStorage.setItem('playerguid', guid);
+		//message.innerHTML = 'game';
+	};
+
+	server.on('reconnect', reconnect);
+
+	init();
 
 
-    //var server = new Connection({
-    //    remote: '/player'
-    //});
-	
-
-    init();
 
 });
