@@ -2,22 +2,47 @@
 <fest:doctype>html</fest:doctype>
 <html>
 	<head>
+		<link 
+			rel="stylesheet" 
+			type="text/css" 
+			href="css/main.css" 
+		/>
+
 		<meta charset="utf-8" />
 		<title>
 			<fest:value>json.title</fest:value>
 		</title>
-		<meta name="viewport" content="initial-scale=1.0, user-scalable=no, maximum-scale=1, minimum-scale=1"/>
-	</head>
-	<body>
-		<form>
-			<input id="token" />
-			<button id="connect" type="submit">connect</button>
-		</form>
+		<meta name="viewport" id="Viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 
-				<input id='send' type="button" value="Send"/>
+	</head>
+		<body>
+
+		<div class="main-screen" id="startLayer" style='display: none'>
+	        <div class="main-screen__menu">
+	            <h1 class="menu__logo">TECHNOCRAFT</h1>
+	            <h1 class="menu__logo">JOYSTIC</h1>
+	            <ul class="menu__list">
+	            	<li class="menu__list__item"><h3>Enter tour token</h3></li>
+	            	<li class="menu__list__item"><input class='list__item__input' style='font-size:25px' id="inputToken"/></li>
+	                <li class="menu__list__item"><a href="#" id="connect">Connect</a></li>
+	            </ul>
+	        </div>
+	    </div>
+
+	    <canvas width="100%" height="100%" id="convasJoystick" style='display: none'></canvas>
+
+	<!--
+			<form >
+				<input id="token"/>
+				<button id="connect" type="submit">connect</button>
+			</form>
+
 			
-	</body>
-	
+			<a href='#' id='send'>Send</a>
+		-->		
+		</body>
+		
 	<script type="text/javascript" src="js/lib/require.js"></script>
 	
 	<script type="text/javascript" src="js/joystick.js"></script>

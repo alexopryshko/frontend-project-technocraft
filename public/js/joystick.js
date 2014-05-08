@@ -8,7 +8,9 @@ require.config({
         Connector: "/js/lib/Connector",
         FnQuery: "/js/lib/FnQuery",
         //device_orientation: "js/lib/deviceapi-normaliser",
-        "socket.io": "/socket.io/socket.io"
+        //"socket.io": "/socket.io/socket.io"
+        //"socket.io-client": "lib/socket.io/node_modules/socket.io-client",
+        "socket.io": "/js/lib/socket.io/socket.io"
     },
     shim: {
         'backbone': {
@@ -42,7 +44,40 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
     });
 
 
-    var input = document.getElementById('token');
+	document.getElementById('inputToken').onblur = function() {
+		document.body.scrollTop = 0;
+	}
+
+	document.getElementById('startLayer').addEventListener('touchmove', function(event) {
+		event.preventDefault();
+	}, false); 
+
+
+	$(window).resize(function () { 
+		document.body.scrollTop = 0;
+		var ratio = window.devicePixelRatio || 1;
+		var width = screen.width * ratio;
+		var height = screen.height * ratio;
+		ctx.canvas.width  = width;
+		ctx.canvas.height = height;
+	});
+
+
+    var input = document.getElementById('inputToken');
+    var connect = document.getElementById('connect');
+    var canvas = document.getElementById('convasJoystick');
+
+    ctx = canvas.getContext('2d');
+	var ratio = window.devicePixelRatio || 1;
+	var width = screen.width * ratio;
+	var height = screen.height * ratio;
+	ctx.canvas.width  = width;
+	ctx.canvas.height = height;
+
+	var centerX = canvas.width / 4;
+    var centerY = canvas.height / 2;
+    var radius = 100;
+
     // Создаем связь с сервером
 	var server = new Connector({
 			server: ['bind'],
@@ -52,37 +87,29 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 
 	// Инициализация
 	init = function(){
-		//message.innerHTML = 'ready';
-		// Если id нет
 		if (!localStorage.getItem('playerguid')){
-			// Ждем ввода токена
-			input.parentNode.addEventListener('submit', function(e){
-				e.preventDefault();
-				console.log('asfd');
-				// И отправляем его на сервер
-				server.bind({token: input.value}, function(data){
-					if (data.status == 'success'){ //  В случае успеха
-						// Стартуем джостик
-						start(data.guid);
-					}
-				});
-			}, false);
-
-		} else { // иначе
-			// переподключаемся к уже созданной связке
+			document.getElementById('startLayer').style.display = 'block';
+			connect.addEventListener('TouchStart', connection, false);
+			connect.addEventListener('click', connection, false);
+		} else { 
 			reconnect();
 		}
+		return false;
 	};
 
-	// Переподключение
-	// Используем сохранненный id связки
+	connection = function(e) {
+		e.preventDefault();
+		server.bind({token: input.value}, function(data){
+			if (data.status == 'success'){ 
+				start(data.guid);
+			}
+		});
+	}
+
 	reconnect = function(){
 		server.bind({guid: localStorage.getItem('playerguid')}, function(data){
-			// Если все ок
 			if (data.status == 'success'){
-				// Стартуем
 				start(data.guid);
-			// Если связки уже нет
 			} else if (data.status == 'undefined guid'){
 				// Начинаем все заново
 				localStorage.removeItem('playerguid');
@@ -93,16 +120,28 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 
 	// Старт игры
 	start = function(guid){
+		document.getElementById('startLayer').style.display = 'none';
+		canvas.style.display = 'block';
 		console.log('start player');
-		// Сохраняем id связки
 		localStorage.setItem('playerguid', guid);
-		//message.innerHTML = 'game';
 	};
 
-	server.on('reconnect', reconnect);
+	canvas.addEventListener('touchmove', function(event) {
+		event.preventDefault();
+		for (var i = 0; i < event.touches.length; i++) {
+			var x = event.touches[i].pageX;
+			var y = event.touches[i].pageY;
+			ctx.beginPath();
+	    	ctx.arc(x, y, 10, 0, 2 * Math.PI, false);
+	    	ctx.fillStyle = 'green';
+	    	ctx.fill();
+	    	ctx.lineWidth = 5;
+	    	ctx.strokeStyle = '#003300';
+	    	ctx.stroke();
+		}
+		
+	});
 
 	init();
-
-
 
 });

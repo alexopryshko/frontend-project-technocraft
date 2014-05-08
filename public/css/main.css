@@ -116,6 +116,11 @@ button:hover, .menu__list__item a:hover, .scoreboard__back:hover {
     text-align: left;
 }
 
+.list__item__input {
+    width: 246px;
+    height: 35px;
+}
+
 .scoreboard__back {
     width: 200px;
     margin-top: 15px;
