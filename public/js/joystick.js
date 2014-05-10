@@ -52,16 +52,24 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
     var currentScreen = startLayer;
 
     ctx = canvas.getContext('2d');
-    //ctx.scale(2, 2);
 	var ratio = window.devicePixelRatio || 1;
 	var width = screen.width * ratio;
 	var height = screen.height * ratio;
 	ctx.canvas.width  = width;
 	ctx.canvas.height = height;
+	ctx.scale(ratio, ratio);
+
 
 	//var centerX = canvas.width / 4;
     //var centerY = canvas.height / 2;
     //var radius = 100;
+    var joystickPosX = width / (6 * ratio);
+    var joystickPosY = width / (3 * ratio);
+    var joystickRadius = height / (15 * ratio);
+    var stickRadius = height / (40 * ratio);
+    var buttonRadius = height / (30 * ratio);
+    var buttonPosX = 2 * width / (3 * ratio);
+    var buttonPosY = width / (4 * ratio);
     var joystickAvailable = false;
     var joystickTouch = 0;
     var buttonTouch = 0;
@@ -131,35 +139,34 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 	};
 
 	drowJoystick = function() {
-		//var ratio = window.devicePixelRatio || 1;
-		var width = screen.width;// * ratio;
-		var height = screen.height;// * ratio;
-
+		//ctx.save();
 		ctx.beginPath();
-	    ctx.arc(width / 3, 5 * height / 13, height / 6, 0, 2 * Math.PI, false);
+	    ctx.arc(joystickPosX, joystickPosY, joystickRadius, 0, 2 * Math.PI, false);
 	    ctx.fillStyle = "black";
 	    ctx.fill();
-		ctx.lineWidth = 5;
+		ctx.lineWidth = 5 / ratio;
 		ctx.strokeStyle = '#0000FF';
 		ctx.stroke();
 		ctx.closePath();
 
 	    ctx.beginPath();
-	    ctx.arc(width / 3, 5 * height / 13, height / 20, 0, 2 * Math.PI, false);
-	    ctx.lineWidth = 10;
+	    ctx.arc(joystickPosX, joystickPosY, stickRadius, 0, 2 * Math.PI, false);
+	    ctx.lineWidth = 7 / ratio;
 	    ctx.strokeStyle = '#00BFFF';
 	    ctx.stroke();
 		ctx.closePath();
+
 	}
 
 	drowGamepad = function() {
+		ctx.fillStyle = "#DAA520";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		drowJoystick();
-
 		ctx.beginPath();
-	    ctx.arc(2 * width / 3, height / 7, height / 25, 0, 2 * Math.PI, false);
+	    ctx.arc(buttonPosX, buttonPosY, buttonRadius, 0, 2 * Math.PI, false);
 	    ctx.fillStyle = "#353535";
 	    ctx.fill();
-		ctx.lineWidth = 5;
+		ctx.lineWidth = 8 / ratio;
 		ctx.strokeStyle = '#0000FF';
 		ctx.stroke();
 		ctx.closePath();
@@ -189,48 +196,38 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 
 	canvas.addEventListener('touchstart', function(event) {
 		event.preventDefault();
-		for (var i = 0; i < event.touches.length; i++) {
-			var x = event.touches[i].pageX;
-			var y = event.touches[i].pageY;
-			var width = screen.width;// * ratio;
-			var height = screen.height;// * ratio;
 
-			var stickLimit = (height / 6 - height / 15);
-			var stickDistance = Math.pow((x - width / 3),2) + Math.pow(( y - 5 * height / 13), 2);
+		for (var i = 0; i < event.touches.length; i++) {
+			var x = event.touches[i].pageX / ratio;
+			var y = event.touches[i].pageY / ratio;
+
+			var stickLimit = joystickRadius - stickRadius;
+			var stickDistance = Math.pow((x - joystickPosX), 2) + Math.pow((y - joystickPosY), 2);
+
 			if (stickDistance < Math.pow(stickLimit, 2)) {
+
+				server.send(Math.pow(stickLimit, 2) + "+" + stickDistance, function(answer){
+					console.log(answer);
+				});
+
 				joystickAvailable = true;
 				joystickTouch = i;
 				drowJoystick();
 				ctx.beginPath();
-				ctx.arc(x, y, height / 20, 0, 2 * Math.PI, false);
-				ctx.lineWidth = 10;
-				ctx.strokeStyle = '#00BFFF';
-				ctx.stroke();
+				ctx.arc(x, y, stickRadius, 0, 2 * Math.PI, false);
 				ctx.closePath();
+
 			}
 
-			var buttonLimit = height / 25;
-			var buttonDistance = Math.pow((x - 2 * width / 3),2) + Math.pow((y - height / 7), 2);
-
-			server.send("===================", function(answer){
-				console.log(answer);
-			});
-			server.send(x + "_______" + y, function(answer){
-				console.log(answer);
-			});
-			server.send(2 * width / 3 + "_______" + buttonDistance, function(answer){
-				console.log(answer);
-			});
+			var buttonLimit = 3 * buttonRadius / 2;
+			var buttonDistance = Math.pow((x - buttonPosX), 2) + Math.pow((y - buttonPosY), 2);
 
 			if (buttonDistance < Math.pow(buttonLimit, 2)) {
 				buttonTouch = i;
 				ctx.beginPath();
-			    ctx.arc(2 * width / 3, height / 7, height / 25, 0, 2 * Math.PI, false);
-			    ctx.fillStyle = "black";
+			    ctx.arc(buttonPosX, buttonPosY, buttonRadius, 0, 2 * Math.PI, false);
+			    ctx.fillStyle = "#white";
 			    ctx.fill();
-				ctx.lineWidth = 5;
-				ctx.strokeStyle = '#0000FF';
-				ctx.stroke();
 				ctx.closePath();
 			}
 		}
@@ -240,19 +237,17 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 	canvas.addEventListener('touchmove', function(event) {
 		event.preventDefault();
 		if (joystickAvailable == true) {
-			var x = event.touches[joystickTouch].pageX;
-			var y = event.touches[joystickTouch].pageY;
-			var width = screen.width;// * ratio;
-			var height = screen.height;// * ratio;
+			var x = event.touches[0].pageX / ratio;
+			var y = event.touches[0].pageY / ratio;
 
 			drowJoystick();
 		    
-			var stickLimit = (height / 6 - height / 15);
-			var stickDistance = Math.pow((x - width / 3),2) + Math.pow(( y - 5 * height / 13),2)
+			var stickLimit = joystickRadius - stickRadius - 7 / ratio;
+			var stickDistance = Math.pow((x - joystickPosX), 2) + Math.pow((y - joystickPosY), 2);
 			if (stickDistance > Math.pow(stickLimit, 2)) {
 			   	console.log("_test_");
-			   	x1 = width / 3;
-				y1 = 5 * height / 13;
+			   	x1 = joystickPosX;
+				y1 = joystickPosY;
 				x2 = x;
 				y2 = y;
 			   	var sin = (y2 - y1) / Math.sqrt(stickDistance);
@@ -261,23 +256,31 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 			   	y = stickLimit * sin + y1;
 			}
 
+			drowGamepad();
 			ctx.beginPath();
-			ctx.arc(x, y, height / 20, 0, 2 * Math.PI, false);
-			ctx.lineWidth = 10;
+			ctx.arc(x, y, stickRadius, 0, 2 * Math.PI, false);
+			ctx.lineWidth = 7 / ratio;
 			ctx.strokeStyle = '#00BFFF';
 			ctx.stroke();
 			ctx.closePath();
 		}
+
 	});
 
 	canvas.addEventListener('touchend', function(event) {
 		event.preventDefault();
-		drowJoystick();
+		//drowJoystick();
+		drowGamepad();
 		joystickAvailable = false;
+
+		server.send(event.touches[0] + "________" + event.touches[0], function(answer){
+			console.log(answer);
+		});
+
 	});
 
 	init();
-	//drowJoystick();
+	
 	drowGamepad();
 
 });
