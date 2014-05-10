@@ -30,6 +30,13 @@
 	        </div>
 	    </div>
 
+	    <div class="main-screen" id="portrait" style='display: none'>
+	        <div class="main-screen__menu">
+	            <h3 class="menu__logo">Change</h3>
+	            <h3 class="menu__logo">orientation</h3>
+	        </div>
+	    </div>
+
 	    <canvas width="100%" height="100%" id="convasJoystick" style='display: none'></canvas>
 
 	<!--
