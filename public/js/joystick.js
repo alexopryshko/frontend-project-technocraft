@@ -32,6 +32,7 @@ require.config({
 
 require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connector) {
 
+
     $('#send').click(function() {
 
     	console.log("_test_");
@@ -55,24 +56,29 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 	var ratio = window.devicePixelRatio || 1;
 	var width = screen.width * ratio;
 	var height = screen.height * ratio;
-	ctx.canvas.width  = width;
-	ctx.canvas.height = height;
-	ctx.scale(ratio, ratio);
+	canvas.width  = width;
+	canvas.height = height;
+	canvas.style.width = screen.width;
+	canvas.style.height = screen.height;
+	var gamepadImg = new Image();
 
+    var joystickPosX = 3 * width / (8 * ratio);
+    var joystickPosY = 7 * width / (19 * ratio);
+    var joystickRadius = height / (7 * ratio);
 
-	//var centerX = canvas.width / 4;
-    //var centerY = canvas.height / 2;
-    //var radius = 100;
-    var joystickPosX = width / (6 * ratio);
-    var joystickPosY = width / (3 * ratio);
-    var joystickRadius = height / (15 * ratio);
-    var stickRadius = height / (40 * ratio);
-    var buttonRadius = height / (30 * ratio);
-    var buttonPosX = 2 * width / (3 * ratio);
-    var buttonPosY = width / (4 * ratio);
+    var stickPosX = joystickPosX;
+    var stickPosY = joystickPosY;
+    var stickRadius = height / (15 * ratio);
+
+    var buttonRadius = height / (15 * ratio);
+    var buttonPosX =  569 * width / 1000;
+    var buttonPosY = 317 * width / 1000;
+    var gamepadImgPosX = 7;
+    var gamepadImgPosY = -10;
+
     var joystickAvailable = false;
-    var joystickTouch = 0;
-    var buttonTouch = 0;
+    var joystickTouchId = 0;
+    var buttonTouchId = 0;
 
     var server = new Connector({
 			server: ['bind'],
@@ -80,6 +86,9 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		}
 	);
 
+    server.on('disconnect', function() {
+		console.log('disconnect');
+	});
 
 	orientationchange = function() {
 		if (window.orientation%180===0) {
@@ -89,11 +98,10 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 
 	    } else {
 	        // landscape
-	        currentScreen.style.display = 'block';
-	        document.getElementById('portrait').style.display = 'none';
-	        //drowJoystick();
-	        drowGamepad();
+			currentScreen.style.display = 'block';
+			document.getElementById('portrait').style.display = 'none';
 	    }
+	    drowGamepad();
 	}
 
 	init = function(){
@@ -110,10 +118,12 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 
 	connection = function(e) {
 		e.preventDefault();
-		console.log('___test___');
 		server.bind({token: input.value}, function(data){
 			if (data.status == 'success'){ 
 				start(data.guid);
+			}
+			else {
+				console.log("error token");
 			}
 		});
 	}
@@ -139,7 +149,6 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 	};
 
 	drowJoystick = function() {
-		//ctx.save();
 		ctx.beginPath();
 	    ctx.arc(joystickPosX, joystickPosY, joystickRadius, 0, 2 * Math.PI, false);
 	    ctx.fillStyle = "black";
@@ -150,27 +159,47 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		ctx.closePath();
 
 	    ctx.beginPath();
-	    ctx.arc(joystickPosX, joystickPosY, stickRadius, 0, 2 * Math.PI, false);
+	    ctx.arc(stickPosX, stickPosY, stickRadius, 0, 2 * Math.PI, false);
 	    ctx.lineWidth = 7 / ratio;
 	    ctx.strokeStyle = '#00BFFF';
 	    ctx.stroke();
 		ctx.closePath();
+	}
 
+	drowButton = function() {
+		ctx.beginPath();
+	    ctx.arc(buttonPosX, buttonPosY, buttonRadius, 0, 2 * Math.PI, false);
+	    ctx.fillStyle = "#353535";
+	    ctx.fill();
+		ctx.lineWidth = 8;
+		ctx.strokeStyle = '#0000FF';
+		ctx.stroke();
+		ctx.closePath();
 	}
 
 	drowGamepad = function() {
 		ctx.fillStyle = "#DAA520";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		drowJoystick();
-		ctx.beginPath();
-	    ctx.arc(buttonPosX, buttonPosY, buttonRadius, 0, 2 * Math.PI, false);
-	    ctx.fillStyle = "#353535";
-	    ctx.fill();
-		ctx.lineWidth = 8 / ratio;
-		ctx.strokeStyle = '#0000FF';
-		ctx.stroke();
-		ctx.closePath();
+		gamepadImg.src = "/images/gamepad.png";
 	}
+
+	gamepadImg.onload = function() {
+		ctx.drawImage(gamepadImg, 7, -10);
+		drowJoystick();
+		drowButton();
+	};
+
+	window.addEventListener('deviceorientation', function(event) {
+		//var alpha = Math.sin(event.alpha);
+		var beta = event.beta;
+		var gamma = event.gamma;
+
+		stickPosX = joystickPosX + beta / 5;
+		stickPosY = joystickPosY - gamma / 5;
+
+		drowJoystick();
+
+	});
 
     window.addEventListener('orientationchange', orientationchange);
 
@@ -186,8 +215,8 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 	$(window).resize(function () { 
 		document.body.scrollTop = 0;
 		var ratio = window.devicePixelRatio || 1;
-		var width = screen.width * ratio;
-		var height = screen.height * ratio;
+		width = screen.width * ratio;
+		height = screen.height * ratio;
 		ctx.canvas.width  = width;
 		ctx.canvas.height = height;
 
@@ -198,23 +227,23 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		event.preventDefault();
 
 		for (var i = 0; i < event.touches.length; i++) {
-			var x = event.touches[i].pageX / ratio;
-			var y = event.touches[i].pageY / ratio;
+			var x = event.touches[i].pageX;// / ratio;
+			var y = event.touches[i].pageY;// / ratio;
 
 			var stickLimit = joystickRadius - stickRadius;
 			var stickDistance = Math.pow((x - joystickPosX), 2) + Math.pow((y - joystickPosY), 2);
 
 			if (stickDistance < Math.pow(stickLimit, 2)) {
 
-				server.send(Math.pow(stickLimit, 2) + "+" + stickDistance, function(answer){
-					console.log(answer);
-				});
-
 				joystickAvailable = true;
-				joystickTouch = i;
-				drowJoystick();
+				joystickTouchId = event.touches[i].identifier;
+
+				//drowJoystick();
 				ctx.beginPath();
 				ctx.arc(x, y, stickRadius, 0, 2 * Math.PI, false);
+				ctx.lineWidth = 7 / ratio;
+				ctx.strokeStyle = '#00BFFF';
+				ctx.stroke();
 				ctx.closePath();
 
 			}
@@ -223,11 +252,15 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 			var buttonDistance = Math.pow((x - buttonPosX), 2) + Math.pow((y - buttonPosY), 2);
 
 			if (buttonDistance < Math.pow(buttonLimit, 2)) {
-				buttonTouch = i;
+				buttonTouchId = event.touches[i].identifier;
+
 				ctx.beginPath();
-			    ctx.arc(buttonPosX, buttonPosY, buttonRadius, 0, 2 * Math.PI, false);
-			    ctx.fillStyle = "#white";
-			    ctx.fill();
+				ctx.arc(buttonPosX, buttonPosY, buttonRadius, 0, 2 * Math.PI, false);
+				ctx.fillStyle = "black";
+				ctx.fill();
+				ctx.lineWidth = 1;
+				ctx.strokeStyle = '#0000FF';
+				ctx.stroke();
 				ctx.closePath();
 			}
 		}
@@ -237,46 +270,52 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 	canvas.addEventListener('touchmove', function(event) {
 		event.preventDefault();
 		if (joystickAvailable == true) {
-			var x = event.touches[0].pageX / ratio;
-			var y = event.touches[0].pageY / ratio;
+			for (var i = 0; i < event.touches.length; i++) {
+				if (event.touches[i].identifier == joystickTouchId) {
+					var x = event.touches[i].pageX;// / ratio;
+					var y = event.touches[i].pageY;// / ratio;
 
-			drowJoystick();
-		    
-			var stickLimit = joystickRadius - stickRadius - 7 / ratio;
-			var stickDistance = Math.pow((x - joystickPosX), 2) + Math.pow((y - joystickPosY), 2);
-			if (stickDistance > Math.pow(stickLimit, 2)) {
-			   	console.log("_test_");
-			   	x1 = joystickPosX;
-				y1 = joystickPosY;
-				x2 = x;
-				y2 = y;
-			   	var sin = (y2 - y1) / Math.sqrt(stickDistance);
-			   	var cos = (x2 - x1) / Math.sqrt(stickDistance);
-			   	x = stickLimit * cos + x1;
-			   	y = stickLimit * sin + y1;
+					drowJoystick();
+
+					var stickLimit = joystickRadius - stickRadius - 7 / ratio;
+					var stickDistance = Math.pow((x - joystickPosX), 2) + Math.pow((y - joystickPosY), 2);
+					if (stickDistance > Math.pow(stickLimit, 2)) {
+					   	console.log("_test_");
+					   	x1 = joystickPosX;
+						y1 = joystickPosY;
+						x2 = x;
+						y2 = y;
+					   	var sin = (y2 - y1) / Math.sqrt(stickDistance);
+					   	var cos = (x2 - x1) / Math.sqrt(stickDistance);
+					   	x = stickLimit * cos + x1;
+					   	y = stickLimit * sin + y1;
+					}
+
+					//drowGamepad();
+					ctx.beginPath();
+					ctx.arc(x, y, stickRadius, 0, 2 * Math.PI, false);
+					ctx.lineWidth = 7 / ratio;
+					ctx.strokeStyle = '#00BFFF';
+					ctx.stroke();
+					ctx.closePath();
+				}
 			}
-
-			drowGamepad();
-			ctx.beginPath();
-			ctx.arc(x, y, stickRadius, 0, 2 * Math.PI, false);
-			ctx.lineWidth = 7 / ratio;
-			ctx.strokeStyle = '#00BFFF';
-			ctx.stroke();
-			ctx.closePath();
 		}
 
 	});
 
 	canvas.addEventListener('touchend', function(event) {
 		event.preventDefault();
-		//drowJoystick();
-		drowGamepad();
-		joystickAvailable = false;
+		for (var i = 0; i < event.changedTouches.length; i++) {
+		 	var touch = event.changedTouches[i]; 
 
-		server.send(event.touches[0] + "________" + event.touches[0], function(answer){
-			console.log(answer);
-		});
-
+		 	if (touch.identifier == joystickTouchId) {
+		 		drowJoystick();
+		 	}
+		 	else if (touch.identifier == buttonTouchId) {
+		 		drowButton();
+		 	}
+		};
 	});
 
 	init();

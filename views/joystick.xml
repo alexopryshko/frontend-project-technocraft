@@ -12,7 +12,8 @@
 		<title>
 			<fest:value>json.title</fest:value>
 		</title>
-		<meta name="viewport" id="Viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"/>
+		<!--<meta name="viewport" id="Viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"/>-->
+		<meta name="viewport" id="Viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"/>
 		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 
 	</head>
@@ -20,7 +21,6 @@
 
 		<div class="main-screen" id="startLayer" style='display: none'>
 	        <div class="main-screen__menu">
-	            <h1 class="menu__logo">TECHNOCRAFT</h1>
 	            <h1 class="menu__logo">JOYSTIC</h1>
 	            <ul class="menu__list">
 	            	<li class="menu__list__item"><h3>Enter tour token</h3></li>
@@ -31,23 +31,13 @@
 	    </div>
 
 	    <div class="main-screen" id="portrait" style='display: none'>
-	        <div class="main-screen__menu">
-	            <h3 class="menu__logo">Change</h3>
-	            <h3 class="menu__logo">orientation</h3>
-	        </div>
+	        <h6 class="menu__logo">Change</h6>
+	        <h6 class="menu__logo">orientation</h6>
 	    </div>
 
-	    <canvas width="100%" height="100%" id="convasJoystick" style='display: none'></canvas>
+	    <canvas width="50%" height="100%" id="convasJoystick" style='display: none'></canvas>
+	    <canvas width="50%" height="100%" id="convasButton" style='display: none'></canvas>
 
-	<!--
-			<form >
-				<input id="token"/>
-				<button id="connect" type="submit">connect</button>
-			</form>
-
-			
-			<a href='#' id='send'>Send</a>
-		-->		
 		</body>
 		
 	<script type="text/javascript" src="js/lib/require.js"></script>
