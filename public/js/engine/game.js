@@ -91,9 +91,52 @@ define([
         init();
 
         // Обмен сообщениями
-        server.on('message', function(data, answer){
-            console.log('message', data);
-            answer('answer');
+        server.on('message', function(data, answer) {
+            envVariables.player1.isStay = false;
+            
+            if (data.type == 'up') {
+                envVariables.player1.isUpKey = true;
+                envVariables.player1.isDownKey = false;
+                envVariables.player1.isRightKey = false;
+                envVariables.player1.isLeftKey = false;
+            }
+            else if (data.type == 'down') {
+                envVariables.player1.isUpKey = false;
+                envVariables.player1.isDownKey = true;
+                envVariables.player1.isRightKey = false;
+                envVariables.player1.isLeftKey = false;
+            }
+            else if (data.type == 'right') {
+                envVariables.player1.isUpKey = false;
+                envVariables.player1.isDownKey = false;
+                envVariables.player1.isRightKey = true;
+                envVariables.player1.isLeftKey = false;
+            }
+            else if (data.type == 'left') {
+                envVariables.player1.isUpKey = false;
+                envVariables.player1.isDownKey = false;
+                envVariables.player1.isRightKey = false;
+                envVariables.player1.isLeftKey = true;
+            }
+            else if (data.type == 'fire') {
+                envVariables.player1.isSpacebar = true;   
+            }
+            else if (data.type == 'stopFire') {
+                envVariables.player1.isSpacebar = false;
+            }
+            else if (data.type == 'stopMove') {
+                envVariables.player1.isUpKey = false;
+                envVariables.player1.isDownKey = false;
+                envVariables.player1.isRightKey = false;
+                envVariables.player1.isLeftKey = false;
+
+                envVariables.player1.isStay = true;
+            }
+
+        });
+
+        server.on('connect', function() {
+            console.log('connect');
         });
 
     }

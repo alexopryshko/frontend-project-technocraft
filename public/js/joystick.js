@@ -2,15 +2,13 @@ require.config({
     urlArgs: "_=" + (new Date()).getTime(),
     baseUrl: "js",
     paths: {
-        jquery: "/js/lib/jquery",
-        underscore: "/js/lib/underscore",
-        backbone: "/js/lib/backbone",
-        Connector: "/js/lib/Connector",
-        FnQuery: "/js/lib/FnQuery",
-        //device_orientation: "js/lib/deviceapi-normaliser",
-        //"socket.io": "/socket.io/socket.io"
-        //"socket.io-client": "lib/socket.io/node_modules/socket.io-client",
-        "socket.io": "/js/lib/socket.io/socket.io"
+        jquery: "lib/jquery",
+        underscore: "lib/underscore",
+        backbone: "lib/backbone",
+        Connector: "lib/Connector",
+        FnQuery: "lib/FnQuery",
+        Modernizr: "lib/Modernizr",
+        "socket.io": "lib/socket.io/socket.io"
     },
     shim: {
         'backbone': {
@@ -20,17 +18,14 @@ require.config({
         'underscore': {
             exports: '_'
         },
-        "socket.io": {
-            exports: "io"
+        "Modernizr": {
+            exports: 'Modernizr'
         },
-        "device_orientation": {
-            exports: "deviceOrientation"
-        }
     }
 });
 
 
-require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connector) {
+require(['js/lib/Connector.js', 'js/lib/Modernizr.js'], function(Connector) {
 
 
     $('#send').click(function() {
@@ -42,9 +37,13 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		});
 
         return false;
-    });
+    });	
 
-    
+	if (!Modernizr.sessionstorage || !Modernizr.websockets || !Modernizr.touch) {
+		$('#textError').text ('SORRY, YOUR DEVICE DOES NOT SUPPORT JOYSTICK');
+		$('#error').show();
+		return;
+	}
 
     var input = document.getElementById('inputToken');
     var connect = document.getElementById('connect');
@@ -68,7 +67,10 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 
     var stickPosX = joystickPosX;
     var stickPosY = joystickPosY;
+    var touchStickPosX = stickPosX;
+    var touchStickPosY = stickPosY;
     var stickRadius = height / (15 * ratio);
+    var direction = {type: 'stop'};
 
     var buttonRadius = height / (15 * ratio);
     var buttonPosX =  569 * width / 1000;
@@ -86,10 +88,6 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		}
 	);
 
-    server.on('disconnect', function() {
-		console.log('disconnect');
-	});
-
 	orientationchange = function() {
 		if (window.orientation%180===0) {
 	        // portrait
@@ -101,6 +99,7 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 			currentScreen.style.display = 'block';
 			document.getElementById('portrait').style.display = 'none';
 	    }
+	    document.body.scrollTop = 0;
 	    drowGamepad();
 	}
 
@@ -120,9 +119,11 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		e.preventDefault();
 		server.bind({token: input.value}, function(data){
 			if (data.status == 'success'){ 
+				input.style.borderColor = null;
 				start(data.guid);
 			}
 			else {
+				input.style.borderColor = '#FF0000';
 				console.log("error token");
 			}
 		});
@@ -183,6 +184,50 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		gamepadImg.src = "/images/gamepad.png";
 	}
 
+	sendCommands = function(x, y) {
+		x1 = joystickPosX;
+		y1 = joystickPosY;
+		x2 = x;
+		y2 = y;
+		var stickDistance = Math.pow((x - joystickPosX), 2) + Math.pow((y - joystickPosY), 2);
+		var sin = (y2 - y1) / Math.sqrt(stickDistance);
+		var cos = (x2 - x1) / Math.sqrt(stickDistance);
+
+		if (sin <= 0 && Math.abs(sin) >= Math.abs(cos)) {
+			if (direction.type != 'up') {
+				server.send({
+	          	    type: 'up'
+	            });
+			}
+			direction.type = 'up';
+		}
+		else if (sin >= 0 && Math.abs(sin) >= Math.abs(cos)) {
+			if (direction.type != 'down') {
+				server.send({
+	          	    type: 'down'
+	            });
+			}
+			direction.type = 'down';
+		}
+		else if (cos >=0) {
+			if (direction.type != 'right') {
+				server.send({
+	          	    type: 'right'
+	            });
+			}
+			direction.type = 'right';
+
+		}
+		else if (cos < 0) {
+			if (direction.type != 'left') {
+				server.send({
+	          	    type: 'left'
+	            });
+			}
+			direction.type = 'left';
+		}
+	}
+
 	gamepadImg.onload = function() {
 		ctx.drawImage(gamepadImg, 7, -10);
 		drowJoystick();
@@ -198,6 +243,14 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		stickPosY = joystickPosY - gamma / 5;
 
 		drowJoystick();
+		if (joystickAvailable) {
+			ctx.beginPath();
+			ctx.arc(touchStickPosX, touchStickPosY, stickRadius, 0, 2 * Math.PI, false);
+			ctx.lineWidth = 7 / ratio;
+			ctx.strokeStyle = '#00BFFF';
+			ctx.stroke();
+			ctx.closePath();
+		}
 
 	});
 
@@ -207,7 +260,7 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		document.body.scrollTop = 0;
 	}
 
-	startLayer.addEventListener('touchmove', function(event) {
+	window.addEventListener('touchmove', function(event) {
 		event.preventDefault();
 	}, false); 
 
@@ -219,8 +272,6 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 		height = screen.height * ratio;
 		ctx.canvas.width  = width;
 		ctx.canvas.height = height;
-
-		console.log(width + "+" + height);
 	});
 
 	canvas.addEventListener('touchstart', function(event) {
@@ -238,6 +289,8 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 				joystickAvailable = true;
 				joystickTouchId = event.touches[i].identifier;
 
+				touchStickPosX = x;
+				touchStickPosY = y;
 				//drowJoystick();
 				ctx.beginPath();
 				ctx.arc(x, y, stickRadius, 0, 2 * Math.PI, false);
@@ -245,6 +298,8 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 				ctx.strokeStyle = '#00BFFF';
 				ctx.stroke();
 				ctx.closePath();
+
+				sendCommands(x, y);
 
 			}
 
@@ -262,6 +317,10 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 				ctx.strokeStyle = '#0000FF';
 				ctx.stroke();
 				ctx.closePath();
+
+				server.send({
+	          	    type: 'fire'
+	            });
 			}
 		}
 
@@ -291,6 +350,8 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 					   	y = stickLimit * sin + y1;
 					}
 
+					touchStickPosX = x;
+					touchStickPosY = y;
 					//drowGamepad();
 					ctx.beginPath();
 					ctx.arc(x, y, stickRadius, 0, 2 * Math.PI, false);
@@ -298,6 +359,8 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 					ctx.strokeStyle = '#00BFFF';
 					ctx.stroke();
 					ctx.closePath();
+
+					sendCommands(x, y);
 				}
 			}
 		}
@@ -311,12 +374,36 @@ require(['js/lib/Connector.js'/*, 'lib/deviceapi-normaliser'*/], function(Connec
 
 		 	if (touch.identifier == joystickTouchId) {
 		 		drowJoystick();
+		 		joystickAvailable = false;
+		 		server.send({
+	          	    type: 'stopMove'
+	            });
 		 	}
 		 	else if (touch.identifier == buttonTouchId) {
 		 		drowButton();
+		 		server.send({
+	          	    type: 'stopFire'
+	            });
 		 	}
 		};
 	});
+
+	server.on('disconnect', function() {
+		currentScreen.style.display = 'none';
+		$('#textError').text ('CONNECTION LOST');
+		$('#error').show();
+	});
+
+    server.on('connect', function() {
+    	//$('#error').hide();
+    	//currentScreen.style.display = 'block';
+    	//reconnect();
+    });
+    server.on('reconnect', function() {
+    	//$('#error').hide();
+    	//currentScreen.style.display = 'block';
+    	//reconnect();
+    });
 
 	init();
 	
