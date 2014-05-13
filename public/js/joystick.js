@@ -40,6 +40,7 @@ require(['js/lib/Connector.js', 'js/lib/Modernizr.js'], function(Connector) {
     });	
 
 	if (!Modernizr.sessionstorage || !Modernizr.websockets || !Modernizr.touch) {
+		$('#preview').hide();
 		$('#textError').text ('SORRY, YOUR DEVICE DOES NOT SUPPORT JOYSTICK');
 		$('#error').show();
 		return;
@@ -60,6 +61,7 @@ require(['js/lib/Connector.js', 'js/lib/Modernizr.js'], function(Connector) {
 	canvas.style.width = screen.width;
 	canvas.style.height = screen.height;
 	var gamepadImg = new Image();
+	var isGamepadImgAvailable = false;
 
     var joystickPosX = 3 * width / (8 * ratio);
     var joystickPosY = 7 * width / (19 * ratio);
@@ -107,8 +109,10 @@ require(['js/lib/Connector.js', 'js/lib/Modernizr.js'], function(Connector) {
 		if (!localStorage.getItem('playerguid')){
 			startLayer.style.display = 'block';
 			currentScreen = startLayer;
+			$('#preview').hide();
 			connect.addEventListener('TouchStart', connection, false);
 			connect.addEventListener('click', connection, false);
+
 		} else { 
 			reconnect();
 		}
@@ -141,9 +145,18 @@ require(['js/lib/Connector.js', 'js/lib/Modernizr.js'], function(Connector) {
 		});
 	};
 
-	start = function(guid){
-		startLayer.style.display = 'none';
-		canvas.style.display = 'block';
+	start = function(guid) {
+		$('#preview').hide();
+		if (window.orientation%180===0) {
+			// portrait
+			//currentScreen.style.display = 'none';
+			document.getElementById('portrait').style.display = 'block';
+		} else {
+			// landscape
+			startLayer.style.display = 'none';
+			canvas.style.display = 'block';
+		}
+		
 		currentScreen = canvas;
 		console.log('start player');
 		localStorage.setItem('playerguid', guid);
@@ -181,7 +194,14 @@ require(['js/lib/Connector.js', 'js/lib/Modernizr.js'], function(Connector) {
 	drowGamepad = function() {
 		ctx.fillStyle = "#DAA520";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		gamepadImg.src = "/images/gamepad.png";
+		if (!isGamepadImgAvailable) {
+			gamepadImg.src = "/images/gamepad.png";
+		}
+		else {
+			ctx.drawImage(gamepadImg, 7, -10);
+			drowJoystick();
+			drowButton();
+		}
 	}
 
 	sendCommands = function(x, y) {
@@ -229,6 +249,7 @@ require(['js/lib/Connector.js', 'js/lib/Modernizr.js'], function(Connector) {
 	}
 
 	gamepadImg.onload = function() {
+		isGamepadImgAvailable = true;
 		ctx.drawImage(gamepadImg, 7, -10);
 		drowJoystick();
 		drowButton();
@@ -352,7 +373,6 @@ require(['js/lib/Connector.js', 'js/lib/Modernizr.js'], function(Connector) {
 
 					touchStickPosX = x;
 					touchStickPosY = y;
-					//drowGamepad();
 					ctx.beginPath();
 					ctx.arc(x, y, stickRadius, 0, 2 * Math.PI, false);
 					ctx.lineWidth = 7 / ratio;
@@ -405,8 +425,11 @@ require(['js/lib/Connector.js', 'js/lib/Modernizr.js'], function(Connector) {
     	//reconnect();
     });
 
+    
 	init();
-	
+	//document.body.scrollTop = 0;
 	drowGamepad();
+	
+	//drowGamepad();
 
 });
