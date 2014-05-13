@@ -1,0 +1,160 @@
+@import 'font';
+
+$not-black-color: #464646;
+$dark-grey: #595959;
+$menu-ot: 5%;
+
+@mixin cool-animation($time) {
+  -webkit-transition: all $time ease-in-out;
+  -moz-transition: all $time ease-in-out;
+  -ms-transition: all $time ease-in-out;
+  -o-transition: all $time ease-in-out;
+  transition: all $time ease-in-out;
+}
+
+@mixin center {
+  margin: 0 auto;
+  text-align: center;
+}
+
+@mixin shadow {
+  -webkit-box-shadow: 0 0 5px 0px rgba(150, 150, 150, 0.2);
+  -moz-box-shadow: 0 0 5px 0px rgba(150, 150, 150, 0.2);
+  box-shadow: 0 0 5px 0px rgba(150, 150, 150, 0.2);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: 'press_start_2pregular';
+  margin: 0;
+  height: 100%;
+}
+
+#main, #game, #scoreboard {
+  height: 100%;
+}
+
+.main-screen, .scoreboard {
+  margin: 0;
+  background: $not-black-color;
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  overflow: hidden;
+  text-align: center;
+  color: white;
+}
+
+.main-screen__menu {
+  @include center;
+
+  margin-top: $menu-ot;
+  margin-bottom: $menu-ot;
+  width: 500px;
+
+}
+
+.menu__logo {
+  color: white;
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -o-transform: scale(1.2);
+  text-shadow: 1px 1px 0 #CCC, 2px 2px 0 #CCC, 3px 3px 0 #444, 4px 4px 0 #444, 5px 5px 0 #444, 6px 6px 0 #444;
+}
+
+.menu__list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 40px;
+}
+
+button, .menu__list__item a, .scoreboard__back {
+  border: 1px solid #ebebeb;
+  display: inline-block;
+  width: 50%;
+  height: 30px;
+
+  @include shadow;
+
+  background: #eee;
+  margin: 5px;
+  color: #616161;
+  text-decoration: none;
+  padding-top: 10px;
+
+  @include cool-animation(0.2s);
+
+}
+
+button:hover, .menu__list__item a:hover, .scoreboard__back:hover {
+  color: #bbb;
+  border-color: #7e7e7e;
+  background: $dark-grey;
+}
+
+.scoreboard {
+  padding-top: 20px;
+}
+
+.scoreboard__list {
+  list-style: none;
+  width: 400px;
+  margin: 0 auto;
+  padding-left: 0;
+}
+
+.scoreboard__list__item {
+  text-align: left;
+  margin: 5px;
+}
+
+.list__item__score {
+  float: right;
+}
+
+.list__item__name {
+  text-align: left;
+}
+
+.scoreboard__back {
+  width: 200px;
+  margin-top: 15px;
+}
+
+.game {
+  position: relative;
+  min-height: 100%;
+  background: $dark-grey;
+}
+
+.game__overlapping {
+  text-align: center;
+}
+
+.game__overlapping canvas {
+  margin: 0 auto;
+  margin-top: -600px;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+#canvasBg {
+  background: #fff;
+}
+
+.game {
+  text-align: center;
+}
+
+#gameOver {
+  position: absolute;
+  top: 10%;
+  padding: 20px;
+  width: 96%;
+}
