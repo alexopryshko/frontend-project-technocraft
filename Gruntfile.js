@@ -90,6 +90,9 @@ module.exports = function (grunt) {
                 files: [{
                     src: ['public/js/build.js'],
                     dest: 'public/js/build.min.js'
+                }]
+            }
+        },
 
         sass: {
             css: { /* Подзадача */
