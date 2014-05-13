@@ -55,6 +55,7 @@ define([
                 // Получаем токен
                 server.getToken(function(token) {
                     console.log('token: ' + token);
+                    $('#token').html(token);
                 });
             } else { // иначе
                 // переподключаемся к уже созданной связке

@@ -27,6 +27,14 @@ module.exports = function (grunt) {
                     interrupt: true,
                     livereload: true
                 }
+            },
+            scss_main: {
+                files: ['public/css/*.scss'],
+                tasks: ['sass:css'],
+                options: {
+                    atBegin: true,
+                    livereload: false
+                }
             }
         },
         express: {
@@ -84,6 +92,19 @@ module.exports = function (grunt) {
                     dest: 'public/js/build.min.js'
                 }]
             }
+        },
+
+        sass: {
+            css: { /* Подзадача */
+                files: [{
+                    expand: true,
+                    cwd: 'public/css', /* исходная директория */
+                    src: '*.scss', /* имена шаблонов */
+                    dest: 'public/css', /* результирующая директория */
+                    ext:  '.css'
+
+                }]
+            }
         }
     });
 
@@ -93,7 +114,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
-
+    grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.registerTask('default', ['express', 'watch']);
 
     grunt.registerTask(

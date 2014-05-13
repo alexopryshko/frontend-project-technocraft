@@ -6,6 +6,7 @@
         <div class="game__overlapping">
             <canvas width="800" height="600" id="canvasEntities"></canvas>
         </div>
+        <p style="color: #fff">Token: <span id="token"></span> </p>
     </div>
 </fest:template>
 
