@@ -1,12 +1,14 @@
 define([
     'engine/environment',
     'views/gameOver',
-    'engine/player',
-    'engine/obstacle',
-    'engine/enemy'
+    //'engine/player',
+    //'engine/obstacle',
+    //'engine/enemy',
+    'lib/Connector'
 ], function(
     environment,
-    GameOver
+    GameOver,
+    Connection
 ) {
     var isPlaying,
         requestAnimFrame,
@@ -30,6 +32,112 @@ define([
         envVariables.imageSprite.src = "images/sprite.png";
 
         envVariables.imageSprite.addEventListener("load", init, false);
+
+
+
+        // Создаем связь с сервером
+        var server = new Connection({
+                server: ['getToken', 'bind'],
+                remote: '/console'
+            }
+        );
+
+        // На подключении игрока стартуем игру
+        server.on('player-joined', function(data){
+            // Передаем id связки консоль-джостик
+            start(data.guid);
+        });
+
+        // Инициализация
+        init = function(){
+            // Если id нет
+            if (!localStorage.getItem('consoleguid')){
+                // Получаем токен
+                server.getToken(function(token) {
+                    console.log('token: ' + token);
+                });
+            } else { // иначе
+                // переподключаемся к уже созданной связке
+                reconnect();
+            }
+        };
+
+        // Переподключение
+        reconnect = function(){
+            // Используем сохранненный id связки
+            server.bind({guid: localStorage.getItem('consoleguid')}, function(data){
+                // Если все ок
+                if (data.status == 'success'){
+                    // Стартуем
+                    start(data.guid);
+                // Если связки уже нет
+                } else if (data.status == 'undefined guid'){
+                    // Начинаем все заново
+                    localStorage.removeItem('consoleguid');
+                    init();
+                }
+            });
+        };
+
+        server.on('reconnect', reconnect);
+
+        // Старт игры
+        start = function(guid){
+            console.log('start console');
+            // Сохраняем id связки
+            localStorage.setItem('consoleguid', guid);
+        };
+
+        init();
+
+        // Обмен сообщениями
+        server.on('message', function(data, answer) {
+            envVariables.player1.isStay = false;
+            
+            if (data.type == 'up') {
+                envVariables.player1.isUpKey = true;
+                envVariables.player1.isDownKey = false;
+                envVariables.player1.isRightKey = false;
+                envVariables.player1.isLeftKey = false;
+            }
+            else if (data.type == 'down') {
+                envVariables.player1.isUpKey = false;
+                envVariables.player1.isDownKey = true;
+                envVariables.player1.isRightKey = false;
+                envVariables.player1.isLeftKey = false;
+            }
+            else if (data.type == 'right') {
+                envVariables.player1.isUpKey = false;
+                envVariables.player1.isDownKey = false;
+                envVariables.player1.isRightKey = true;
+                envVariables.player1.isLeftKey = false;
+            }
+            else if (data.type == 'left') {
+                envVariables.player1.isUpKey = false;
+                envVariables.player1.isDownKey = false;
+                envVariables.player1.isRightKey = false;
+                envVariables.player1.isLeftKey = true;
+            }
+            else if (data.type == 'fire') {
+                envVariables.player1.isSpacebar = true;   
+            }
+            else if (data.type == 'stopFire') {
+                envVariables.player1.isSpacebar = false;
+            }
+            else if (data.type == 'stopMove') {
+                envVariables.player1.isUpKey = false;
+                envVariables.player1.isDownKey = false;
+                envVariables.player1.isRightKey = false;
+                envVariables.player1.isLeftKey = false;
+
+                envVariables.player1.isStay = true;
+            }
+
+        });
+
+        server.on('connect', function() {
+            console.log('connect');
+        });
 
     }
     
