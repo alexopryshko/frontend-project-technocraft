@@ -8,6 +8,7 @@ define([
         views: {},
     	initialize: function() {
             var self = this;
+            //todo: backbone event
     		 $(document).on("show", function(event) {
                 _.each(self.views, function(value, key) {
                     if (event._name !== key) {

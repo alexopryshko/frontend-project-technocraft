@@ -15,7 +15,6 @@ define([
         envVariables;
 
     function Game() {
-
         environment.initEnv();
         isPlaying = false;
         requestAnimFrame = window.requestAnimationFrame ||

@@ -40,7 +40,20 @@ define([
         el: ".scoreboard__list",
 
         initialize : function() {
+            var that = this;
+            this._playerViews = [];
 
+            this.collection = Scores;
+
+            console.log(this.collection);
+            this.collection.sort();
+            this.collection.each(function(player) {
+                console.log(player);
+                that._playerViews.push(new PlayerView({
+                    model : player,
+                    tagName : 'li'
+                }));
+            });
         },
 
         render : function() {
@@ -54,6 +67,7 @@ define([
         show: function() {
             this.$el.show();
             var that = this;
+
             $(that.el).empty();
             $.ajax({
                 type: 'GET',
@@ -95,8 +109,8 @@ define([
                     }
                 }
             });
-        }
 
+        }
     });
 
     var View = Backbone.View.extend({
@@ -115,7 +129,9 @@ define([
         },
         show: function () {
             this.$el.show();
+
             this.scoresView.show();
+
             $.event.trigger({
                 type: "show",
                 _name: this._name

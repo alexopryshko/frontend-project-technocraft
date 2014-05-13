@@ -12,7 +12,7 @@
     			<input id="scoreField" type="hidden" name="score">
     				<fest:attributes><fest:attribute name='value' value='{json.score}'/></fest:attributes>
     			</input>
-    			<button id="sendScore" type="submit">Save</button>
+    			<button class="btn" id="sendScore" type="submit">Save</button>
     		</form>
         </div>
     </div>

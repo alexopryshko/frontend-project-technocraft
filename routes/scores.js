@@ -21,7 +21,8 @@ module.exports = {
 		s = JSON.stringify(s);
 		res.setHeader('Content-Type', 'application/javascript');
 		res.setHeader('Content-Length', Buffer.byteLength(s));
-		res.end(s);
+
+        res.end(s);
 	},
 
 	getOne: function(req, res){

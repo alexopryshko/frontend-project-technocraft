@@ -1,10 +1,6 @@
 define(function () {
     var scores = getJSON("scores");
 
-
-
-    console.log(scores);
-
     if (scores == null) {
         scores = [];
     }
