@@ -48,13 +48,13 @@ define([
                 dataType: 'json',
                 success : function(response) {
                     $('.btn').prop("disabled", false);
-                    window.location = "/#scoreboard";
+                    window.location = "#scoreboard";
                     $('#inputScore').trigger("success");
                 },
 
                 error: function(response) {
                     storage.put(data);
-                    window.location = "/#scoreboard";
+                    window.location = "#scoreboard";
                     $('#inputScore').trigger("success");
                 }
             })
