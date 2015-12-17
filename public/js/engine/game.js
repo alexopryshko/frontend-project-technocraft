@@ -38,7 +38,7 @@ define([
         // Создаем связь с сервером
         var server = new Connection({
                 server: ['getToken', 'bind'],
-                remote: '/console'
+                remote: 'console'
             }
         );
 
