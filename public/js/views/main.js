@@ -1,11 +1,10 @@
 define([
     'backbone',
     'tmpl/main',
-    'views/viewManager',
+    'views/viewManager'
 ], function(
     Backbone,
-    tmpl,
-    viewManager
+    tmpl
 ){
 
     var View = Backbone.View.extend({

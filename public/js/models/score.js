@@ -8,7 +8,8 @@ define([
         defaults: {
             'name': '',
             'score': 0
-        }
+        },
+        url: '/scores'
     });
 
     return Player;

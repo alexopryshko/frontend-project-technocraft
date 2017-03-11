@@ -1,15 +1,13 @@
 define([
     'backbone',
     'tmpl/game',
+    'engine/game',
     'views/viewManager',
-    //'engine/gameEngine',
-    //'engine/wall',
-    //'engine/human',
-    //'engine/world'
+    'views/gameOver'
 ], function(
     Backbone,
     tmpl,
-    viewManager
+    GameStart
 ){
     var View = Backbone.View.extend({
         _name: "game",
@@ -18,12 +16,9 @@ define([
         initialize: function () {
             this.render();
             this.hide();
-            //gameStart();
         },
         render: function () {
             this.$el.html(this.template());
-            //$(".game__screen").show();
-            //gameStart();
         },
         show: function () {
             $.event.trigger({
@@ -31,10 +26,10 @@ define([
                 _name: this._name
             }); 
             this.$el.show();
+            GameStart();
         },
         hide: function () {
             this.$el.hide();
-            //$(".game__screen").show();
         }
 
     });

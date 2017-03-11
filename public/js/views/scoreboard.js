@@ -3,16 +3,20 @@ define([
     'tmpl/scoreboard',
     'collections/scores',
     'tmpl/score',
-    'views/viewManager'
+    'views/viewManager',
+    'models/score',
+    'engine/storage',
+    'views/gameOver'
 ], function(
     Backbone,
     tmpl,
     scores,
     tmplScore,
-    viewManager
+    viewManager,
+    Player,
+    Storage,
+    gameOver
 ){
-
-
     var PlayerView = Backbone.View.extend({
 
         tagName: "li",
@@ -37,22 +41,60 @@ define([
         el: ".scoreboard__list",
 
         initialize : function() {
-            var that = this;
-            this._playerViews = [];
-            this.collection.sort();
-            this.collection.each(function(player) {
-                that._playerViews.push(new PlayerView({
-                    model : player,
-                    tagName : 'li'
-                }));
-            });
+
         },
 
         render : function() {
+
+        },
+
+        hide: function() {
+            this.$el.hide();
+        },
+
+        show: function() {
+            this.$el.show();
             var that = this;
-            $(this.el).empty();
-            _(this._playerViews).each(function(pv) {
-                $(that.el).append(pv.render().el);
+            $(that.el).empty();
+            $.ajax({
+                type: 'GET',
+                url: '/scores',
+                data: {
+                    limit: 10
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $(that.el).empty();
+                    var dataStorage = Storage.getAll();
+                    for (var i = 0; i < dataStorage.length; ++i) {
+                        var parsedData = JSON.parse('{"' + decodeURI(dataStorage[i].replace(/&/g, "\",\"").replace(/=/g, "\":\"")) + '"}')
+                        var player = new Player(parsedData);
+                        player.save();
+                    }
+                    Storage.clear();
+
+                    for (var i = 0; i < data.length; ++i) {
+                        pv = new PlayerView({
+                            model : new Player(data[i]),
+                            tagName : 'li'
+                        });
+                        $(that.el).append(pv.render().el);
+                    }
+                },
+                error: function(data) {
+                    $(that.el).empty();
+
+                    var data = Storage.getAll();
+                    for (var i = 0; i < data.length; ++i) {
+                        var parsedData = JSON.parse('{"' + decodeURI(data[i].replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}')
+                        console.log(parsedData);
+                        pv = new PlayerView({
+                            model : new Player(parsedData),
+                            tagName : 'li'
+                        });
+                        $(that.el).append(pv.render().el);
+                    }
+                }
             });
         }
 
@@ -66,9 +108,7 @@ define([
 
         initialize: function () {
             this.render();
-            this.scoresView = new ScoresViews({
-                collection: scores
-            });
+            this.scoresView = new ScoresViews();
             this.hide();
         },
         render: function () {
@@ -76,7 +116,7 @@ define([
         },
         show: function () {
             this.$el.show();
-            this.scoresView.render();
+            this.scoresView.show();
             $.event.trigger({
                 type: "show",
                 _name: this._name
@@ -84,6 +124,7 @@ define([
         },
         hide: function () {
             this.$el.hide();
+            this.scoresView.hide();
         }
 
     });

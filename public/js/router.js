@@ -12,7 +12,6 @@ define([
     viewManager
 ){
 
-    var currentScreen = "";
     var Router = Backbone.Router.extend({
         routes: {
             'scoreboard': 'scoreboardAction',
@@ -20,22 +19,18 @@ define([
             '*default': 'defaultActions'
         },
         initialize: function() {
-            this.viewManager = viewManager; 
+            this.viewManager = viewManager;
+            viewManager.addView(mainView._name, mainView); 
+            viewManager.addView(scoreBoardView._name, scoreBoardView);
+            viewManager.addView(gameView._name, gameView);
         },
         defaultActions: function () {
-            //mainView.render();
-            viewManager.addView(mainView._name, mainView);
             mainView.show();
-
         },
         scoreboardAction: function () {
-            //scoreBoardView.render();
-            viewManager.addView(scoreBoardView._name, scoreBoardView);
             scoreBoardView.show();
         },
         gameAction: function () {
-            //gameView.render();
-            viewManager.addView(gameView._name, gameView);
             gameView.show();
         }
     });
